@@ -1,0 +1,85 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "João Silva",
+      "email": "joao@email.com",
+      "phone": "(11) 99999-9999",
+      "password": "123456",
+      "role": "client"
+    },
+    {
+      "id": 2,
+      "name": "Admin",
+      "email": "admin@timeright.com",
+      "phone": "(11) 88888-8888",
+      "password": "admin123",
+      "role": "admin"
+    }
+  ],
+  "services": [
+    {
+      "id": 1,
+      "name": "Corte Masculino",
+      "category": "Barbearia",
+      "price": 25.00,
+      "duration": 30,
+      "description": "Corte masculino tradicional",
+      "image": "https://via.placeholder.com/300x200"
+    },
+    {
+      "id": 2,
+      "name": "Escova Progressiva",
+      "category": "Cabeleireiro",
+      "price": 120.00,
+      "duration": 180,
+      "description": "Tratamento capilar com escova progressiva",
+      "image": "https://via.placeholder.com/300x200"
+    },
+    {
+      "id": 3,
+      "name": "Buffet Completo",
+      "category": "Buffet",
+      "price": 45.00,
+      "duration": 240,
+      "description": "Buffet completo para eventos",
+      "image": "https://via.placeholder.com/300x200"
+    }
+  ],
+  "professionals": [
+    {
+      "id": 1,
+      "name": "Carlos Barbeiro",
+      "specialty": "Barbearia",
+      "services": [1]
+    },
+    {
+      "id": 2,
+      "name": "Ana Cabeleireira",
+      "specialty": "Cabeleireiro",
+      "services": [2]
+    }
+  ],
+  "appointments": [
+    {
+      "id": 1,
+      "userId": 1,
+      "serviceId": 1,
+      "professionalId": 1,
+      "date": "2024-01-15",
+      "time": "14:00",
+      "status": "confirmed",
+      "createdAt": "2024-01-10T10:00:00Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "userId": 1,
+      "serviceId": 1,
+      "rating": 5,
+      "comment": "Excelente serviço!",
+      "createdAt": "2024-01-16T10:00:00Z"
+    }
+  ]
+}
