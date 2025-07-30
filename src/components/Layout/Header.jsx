@@ -11,9 +11,11 @@ const Header = () => {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <Navbar bg={theme === 'dark' ? 'dark' : 'light'} variant={theme} expand="lg" sticky="top">
+    <Navbar bg="transparent" variant={theme} expand="lg" className="navbar-custom">
       <Container>
-        <Navbar.Brand as={Link} to="/">TimeRight</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/" className="brand-custom">
+          <strong>TimeRight</strong>
+        </Navbar.Brand>
         
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">

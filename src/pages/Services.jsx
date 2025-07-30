@@ -13,7 +13,7 @@ const Services = () => {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [searchParams] = useSearchParams()
 
-  const categories = ['Barbearia', 'Cabeleireiro', 'Buffet', 'Salões', 'Oficina Mecânica']
+  const categories = ['Cabeleireiro', 'Manicure', 'Maquiagem', 'Cuidados Capilares']
 
   useEffect(() => {
     loadServices()

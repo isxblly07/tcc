@@ -1,0 +1,208 @@
+/* Home Page Styles - Following Figma Design */
+
+.home-container {
+  overflow-x: hidden;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, #faf7ff 0%, #f0e6ff 50%, #e6f3ff 100%);
+  position: relative;
+}
+
+[data-theme="dark"] .hero-section {
+  background: linear-gradient(135deg, #2d1b3d 0%, #3d2a4f 50%, #1a2332 100%);
+}
+
+.hero-content {
+  padding: 2rem 0;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #6b5b95;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+[data-theme="dark"] .hero-title {
+  color: #c8a8e9;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: #8a7ca8;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+[data-theme="dark"] .hero-subtitle {
+  color: #b19cd9;
+}
+
+.hero-buttons {
+  margin-top: 2rem;
+}
+
+.btn-primary-custom {
+  background: linear-gradient(135deg, #b19cd9 0%, #a68cc9 100%);
+  border: none;
+  padding: 12px 30px;
+  font-weight: 600;
+  border-radius: 25px;
+  box-shadow: 0 4px 15px rgba(177, 156, 217, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(177, 156, 217, 0.4);
+  background: linear-gradient(135deg, #a68cc9 0%, #9b7cb9 100%);
+}
+
+.hero-image {
+  position: relative;
+  padding: 2rem;
+}
+
+.hero-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, #b19cd9, #d4a5c7, #a8d8ea);
+  border-radius: 2rem;
+  z-index: -1;
+  transform: rotate(-5deg);
+}
+
+.hero-image img {
+  box-shadow: 0 20px 40px rgba(177, 156, 217, 0.2);
+}
+
+/* Services Preview Section */
+.services-preview {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .services-preview {
+  background: rgba(45, 27, 61, 0.8);
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #6b5b95;
+  margin-bottom: 1rem;
+}
+
+[data-theme="dark"] .section-title {
+  color: #c8a8e9;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: #8a7ca8;
+  margin-bottom: 3rem;
+}
+
+[data-theme="dark"] .section-subtitle {
+  color: #b19cd9;
+}
+
+.service-preview-card {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(250, 247, 255, 0.8);
+  border-radius: 20px;
+  border: 1px solid rgba(177, 156, 217, 0.2);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+[data-theme="dark"] .service-preview-card {
+  background: rgba(61, 42, 79, 0.8);
+  border: 1px solid rgba(177, 156, 217, 0.3);
+}
+
+.service-preview-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(177, 156, 217, 0.2);
+}
+
+.service-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #b19cd9, #d4a5c7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+  color: white;
+}
+
+.service-preview-card h5 {
+  color: #6b5b95;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+[data-theme="dark"] .service-preview-card h5 {
+  color: #c8a8e9;
+}
+
+.service-preview-card p {
+  color: #8a7ca8;
+  margin: 0;
+}
+
+[data-theme="dark"] .service-preview-card p {
+  color: #b19cd9;
+}
+
+/* CTA Section */
+.cta-section {
+  background: linear-gradient(135deg, #b19cd9 0%, #d4a5c7 100%);
+  color: white;
+}
+
+.cta-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.cta-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .cta-title {
+    font-size: 2rem;
+  }
+  
+  .hero-image {
+    margin-top: 2rem;
+  }
+}
