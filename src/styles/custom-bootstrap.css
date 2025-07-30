@@ -1,0 +1,74 @@
+/* Custom Bootstrap Variables Override */
+:root {
+  --bs-primary-rgb: 177, 156, 217;
+  --bs-secondary-rgb: 212, 165, 199;
+  --bs-success-rgb: 168, 216, 234;
+  --bs-danger-rgb: 244, 166, 205;
+  --bs-warning-rgb: 247, 215, 148;
+  --bs-info-rgb: 155, 181, 255;
+  --bs-light-rgb: 250, 247, 255;
+  --bs-dark-rgb: 107, 91, 149;
+}
+
+/* Button customizations */
+.btn-primary {
+  background: linear-gradient(135deg, #b19cd9 0%, #a68cc9 100%);
+  border-color: #b19cd9;
+  box-shadow: 0 2px 8px rgba(177, 156, 217, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #a68cc9 0%, #9b7cb9 100%);
+  border-color: #a68cc9;
+  box-shadow: 0 4px 12px rgba(177, 156, 217, 0.4);
+}
+
+.btn-outline-primary {
+  color: #b19cd9;
+  border-color: #b19cd9;
+}
+
+.btn-outline-primary:hover {
+  background-color: #b19cd9;
+  border-color: #b19cd9;
+}
+
+/* Card customizations */
+.card {
+  border: 1px solid #e6d9ff;
+  box-shadow: 0 4px 16px rgba(177, 156, 217, 0.1);
+}
+
+[data-theme="dark"] .card {
+  border: 1px solid #5a4570;
+  box-shadow: 0 4px 16px rgba(45, 27, 61, 0.3);
+}
+
+/* Navbar customizations */
+.navbar-light {
+  background: linear-gradient(135deg, #faf7ff 0%, #f0e6ff 100%) !important;
+  border-bottom: 1px solid #e6d9ff;
+}
+
+[data-theme="dark"] .navbar-dark {
+  background: linear-gradient(135deg, #3d2a4f 0%, #2d1b3d 100%) !important;
+  border-bottom: 1px solid #5a4570;
+}
+
+/* Badge customizations */
+.badge.bg-primary {
+  background: linear-gradient(135deg, #b19cd9 0%, #a68cc9 100%) !important;
+}
+
+.badge.bg-success {
+  background: linear-gradient(135deg, #a8d8ea 0%, #98c8da 100%) !important;
+}
+
+.badge.bg-danger {
+  background: linear-gradient(135deg, #f4a6cd 0%, #e496bd 100%) !important;
+}
+
+.badge.bg-warning {
+  background: linear-gradient(135deg, #f7d794 0%, #e7c784 100%) !important;
+  color: #6b5b95 !important;
+}

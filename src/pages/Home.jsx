@@ -6,8 +6,8 @@ import { FaCut, FaWrench, FaUtensils, FaPalette } from 'react-icons/fa'
 const Home = () => {
   const categories = [
     { name: 'Barbearia', icon: <FaCut />, color: 'primary' },
-    { name: 'Cabeleireiro', icon: <FaPalette />, color: 'success' },
-    { name: 'Buffet', icon: <FaUtensils />, color: 'warning' },
+    { name: 'Cabeleireiro', icon: <FaPalette />, color: 'info' },
+    { name: 'Buffet', icon: <FaUtensils />, color: 'success' },
     { name: 'Oficina Mecânica', icon: <FaWrench />, color: 'danger' }
   ]
 
