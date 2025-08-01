@@ -16,6 +16,12 @@ import InstitutionalBooking from './pages/institutional/Booking'
 import Contact from './pages/institutional/Contact'
 import Design from './pages/institutional/Design'
 
+// Category Pages
+import Hair from './pages/categories/Hair'
+import Nails from './pages/categories/Nails'
+import Makeup from './pages/categories/Makeup'
+import Skincare from './pages/categories/Skincare'
+
 // App Pages
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -42,6 +48,10 @@ function App() {
               <Route path="agendamento" element={<InstitutionalBooking />} />
               <Route path="contato" element={<Contact />} />
               <Route path="design" element={<Design />} />
+              <Route path="cabelo" element={<Hair />} />
+              <Route path="manicure" element={<Nails />} />
+              <Route path="maquiagem" element={<Makeup />} />
+              <Route path="cuidados" element={<Skincare />} />
             </Route>
             
             {/* App Routes */}

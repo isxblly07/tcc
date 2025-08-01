@@ -52,40 +52,48 @@ const Home = () => {
           </Row>
           <Row>
             <Col md={3} className="mb-4">
-              <div className="service-preview-card">
-                <div className="service-icon">
-                  <FaCut />
+              <Link to="/cabelo" style={{textDecoration: 'none', color: 'inherit'}}>
+                <div className="service-preview-card">
+                  <div className="service-icon">
+                    <FaCut />
+                  </div>
+                  <h5>Cabelo</h5>
+                  <p>Cortes, coloração e tratamentos capilares</p>
                 </div>
-                <h5>Profissionais Qualificados</h5>
-                <p>Especialistas em todas as áreas da beleza</p>
-              </div>
+              </Link>
             </Col>
             <Col md={3} className="mb-4">
-              <div className="service-preview-card">
-                <div className="service-icon">
-                  <FaHandPaper />
+              <Link to="/manicure" style={{textDecoration: 'none', color: 'inherit'}}>
+                <div className="service-preview-card">
+                  <div className="service-icon">
+                    <FaHandPaper />
+                  </div>
+                  <h5>Manicure</h5>
+                  <p>Unhas perfeitas e nail art criativa</p>
                 </div>
-                <h5>Agendamento Fácil</h5>
-                <p>Reserve seu horário em poucos cliques</p>
-              </div>
+              </Link>
             </Col>
             <Col md={3} className="mb-4">
-              <div className="service-preview-card">
-                <div className="service-icon">
-                  <FaPalette />
+              <Link to="/maquiagem" style={{textDecoration: 'none', color: 'inherit'}}>
+                <div className="service-preview-card">
+                  <div className="service-icon">
+                    <FaPalette />
+                  </div>
+                  <h5>Maquiagem</h5>
+                  <p>Para todas as ocasiões especiais</p>
                 </div>
-                <h5>Variedade de Serviços</h5>
-                <p>Tudo que você precisa para ficar linda</p>
-              </div>
+              </Link>
             </Col>
             <Col md={3} className="mb-4">
-              <div className="service-preview-card">
-                <div className="service-icon">
-                  <FaEye />
+              <Link to="/cuidados" style={{textDecoration: 'none', color: 'inherit'}}>
+                <div className="service-preview-card">
+                  <div className="service-icon">
+                    <FaEye />
+                  </div>
+                  <h5>Cuidados</h5>
+                  <p>Tratamentos especializados para pele</p>
                 </div>
-                <h5>Qualidade Garantida</h5>
-                <p>Produtos premium e atendimento excepcional</p>
-              </div>
+              </Link>
             </Col>
           </Row>
         </Container>
