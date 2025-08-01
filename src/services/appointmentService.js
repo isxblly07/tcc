@@ -12,7 +12,8 @@ export const appointmentService = {
       const { data } = await api.post('/appointments', newAppointment)
       return data
     } catch (error) {
-      throw new Error('Erro ao criar agendamento')
+      console.error('Erro ao criar agendamento:', error)
+      throw new Error(error.response?.data?.message || 'Erro ao criar agendamento')
     }
   },
 
@@ -21,7 +22,8 @@ export const appointmentService = {
       const { data } = await api.get(`/appointments?userId=${userId}`)
       return data
     } catch (error) {
-      throw new Error('Erro ao buscar agendamentos')
+      console.error('Erro ao buscar agendamentos do usuário:', error)
+      throw new Error(error.response?.data?.message || 'Erro ao buscar agendamentos')
     }
   },
 
@@ -30,7 +32,8 @@ export const appointmentService = {
       const { data } = await api.get('/appointments')
       return data
     } catch (error) {
-      throw new Error('Erro ao buscar agendamentos')
+      console.error('Erro ao buscar todos agendamentos:', error)
+      throw new Error(error.response?.data?.message || 'Erro ao buscar agendamentos')
     }
   },
 
@@ -39,7 +42,8 @@ export const appointmentService = {
       const { data } = await api.patch(`/appointments/${id}`, updates)
       return data
     } catch (error) {
-      throw new Error('Erro ao atualizar agendamento')
+      console.error('Erro ao atualizar agendamento:', error)
+      throw new Error(error.response?.data?.message || 'Erro ao atualizar agendamento')
     }
   },
 
@@ -47,7 +51,8 @@ export const appointmentService = {
     try {
       await api.delete(`/appointments/${id}`)
     } catch (error) {
-      throw new Error('Erro ao cancelar agendamento')
+      console.error('Erro ao cancelar agendamento:', error)
+      throw new Error(error.response?.data?.message || 'Erro ao cancelar agendamento')
     }
   }
 }

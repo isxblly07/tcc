@@ -32,6 +32,10 @@ import Appointments from './pages/Appointments'
 import History from './pages/History'
 import AdminDashboard from './pages/AdminDashboard'
 import Review from './pages/Review'
+import Agenda from './pages/Agenda'
+import Profile from './pages/Profile'
+import Settings from './pages/Settings'
+import Reports from './pages/Reports'
 import ChatSupport from './components/UI/ChatSupport'
 
 function App() {
@@ -90,6 +94,30 @@ function App() {
                     <Route path="review/:appointmentId" element={
                       <ProtectedRoute>
                         <Review />
+                      </ProtectedRoute>
+                    } />
+                    
+                    <Route path="agenda" element={
+                      <ProtectedRoute>
+                        <Agenda />
+                      </ProtectedRoute>
+                    } />
+                    
+                    <Route path="profile" element={
+                      <ProtectedRoute>
+                        <Profile />
+                      </ProtectedRoute>
+                    } />
+                    
+                    <Route path="settings" element={
+                      <ProtectedRoute>
+                        <Settings />
+                      </ProtectedRoute>
+                    } />
+                    
+                    <Route path="reports" element={
+                      <ProtectedRoute adminOnly>
+                        <Reports />
                       </ProtectedRoute>
                     } />
                   </Routes>

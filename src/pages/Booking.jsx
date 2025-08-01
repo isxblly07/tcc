@@ -44,7 +44,8 @@ const Booking = () => {
         p.services.includes(parseInt(serviceId))
       ))
     } catch (error) {
-      toast.error('Erro ao carregar dados')
+      console.error('Erro ao carregar dados:', error)
+      toast.error(`Erro ao carregar dados: ${error.message || 'Verifique se o servidor está rodando'}`)
       navigate('/services')
     } finally {
       setLoading(false)
@@ -62,7 +63,8 @@ const Booking = () => {
       toast.success('Agendamento realizado com sucesso!')
       navigate('/appointments')
     } catch (error) {
-      toast.error('Erro ao criar agendamento')
+      console.error('Erro ao criar agendamento:', error)
+      toast.error(`Erro ao criar agendamento: ${error.message || 'Tente novamente'}`)
     } finally {
       setSubmitting(false)
     }

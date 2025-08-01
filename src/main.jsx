@@ -9,6 +9,7 @@ import './styles/pastel-theme.css'
 import './styles/home.css'
 import './styles/header.css'
 import './styles/institutional.css'
+import './styles/calendar.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

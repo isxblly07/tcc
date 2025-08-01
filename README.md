@@ -8,13 +8,19 @@ Sistema completo de agendamento online desenvolvido com React, Vite e React Boot
 - ✅ Login/Cadastro (email, telefone)
 - ✅ Catálogo de serviços com filtros por categoria
 - ✅ Agendamento com escolha de data, horário e profissional
+- ✅ **Agenda com calendário interativo**
 - ✅ Visualização de agendamentos
 - ✅ Histórico de serviços
+- ✅ **Perfil do usuário editável**
+- ✅ **Configurações personalizáveis**
+- ✅ **Notificações em tempo real**
 - ✅ Interface responsiva com modo escuro
 
 ### Administrador
 - ✅ Painel administrativo
 - ✅ Gerenciamento de agendamentos
+- ✅ **Relatórios detalhados com gráficos**
+- ✅ **Agenda administrativa com calendário**
 - ✅ Estatísticas em tempo real
 - ✅ Exportação de dados (CSV)
 
@@ -22,6 +28,7 @@ Sistema completo de agendamento online desenvolvido com React, Vite e React Boot
 
 - **React 18** com Vite
 - **React Bootstrap** para UI
+- **React Calendar** para calendário interativo
 - **React Router DOM** para navegação
 - **Axios** para requisições HTTP
 - **React Hook Form + Yup** para validação
@@ -85,12 +92,15 @@ src/
 ## 🎨 Recursos Implementados
 
 - ✅ Interface responsiva (mobile-first)
-- ✅ Modo escuro/claro
+- ✅ **Modo escuro/claro com persistência**
+- ✅ **Calendário interativo com indicadores**
+- ✅ **Sistema de notificações**
+- ✅ **Relatórios e estatísticas**
 - ✅ Validação de formulários
 - ✅ Proteção de rotas
 - ✅ Feedback visual (toasts)
 - ✅ Loading states
-- ✅ Tratamento de erros
+- ✅ **Tratamento de erros melhorado**
 - ✅ Acessibilidade básica
 
 ## 🔧 Scripts Disponíveis
@@ -99,6 +109,8 @@ src/
 - `npm run build` - Gera build de produção
 - `npm run preview` - Preview do build
 - `npm run server` - Inicia o json-server
+- `npm run start` - **Verifica e inicia o servidor + dev**
+- `npm run check-server` - **Verifica se o json-server está rodando**
 - `npm run lint` - Executa o linter
 
 ## 📱 Responsividade

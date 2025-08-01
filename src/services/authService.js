@@ -4,9 +4,9 @@ export const authService = {
   async login(credentials) {
     try {
       const { data: users } = await api.get('/users')
-      const user = users.find(u => 
-        (u.email === credentials.email || u.phone === credentials.email) && 
-        u.password === credentials.password
+      const user = users.find(user => 
+        (user.email === credentials.email || user.phone === credentials.email) && 
+        user.password === credentials.password
       )
       
       if (!user) {
@@ -16,7 +16,8 @@ export const authService = {
       const token = `token_${user.id}_${Date.now()}`
       return { user, token }
     } catch (error) {
-      throw new Error('Erro ao fazer login')
+      console.error('Erro no login:', error)
+      throw new Error(error.message || 'Erro ao fazer login. Verifique suas credenciais.')
     }
   },
 
@@ -40,7 +41,8 @@ export const authService = {
       
       return { user: newUser, token }
     } catch (error) {
-      throw new Error('Erro ao criar conta')
+      console.error('Erro no registro:', error)
+      throw new Error(error.message || 'Erro ao criar conta. Tente novamente.')
     }
   }
 }

@@ -32,7 +32,8 @@ const AdminDashboard = () => {
       setServices(servicesData)
       calculateStats(appointmentsData)
     } catch (error) {
-      toast.error('Erro ao carregar dados')
+      console.error('Erro ao carregar dados:', error)
+      toast.error(`Erro ao carregar dados: ${error.message || 'Verifique se o servidor está rodando'}`)
     } finally {
       setLoading(false)
     }
@@ -58,7 +59,8 @@ const AdminDashboard = () => {
       toast.success('Status atualizado com sucesso!')
       loadData()
     } catch (error) {
-      toast.error('Erro ao atualizar status')
+      console.error('Erro ao atualizar status:', error)
+      toast.error(`Erro ao atualizar status: ${error.message || 'Tente novamente'}`)
     }
   }
 
