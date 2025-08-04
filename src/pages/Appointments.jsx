@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Card, Badge, Button } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import { FaCreditCard, FaCalendarAlt, FaTimes } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { appointmentService } from '../services/appointmentService'
 import { serviceService } from '../services/serviceService'
@@ -85,17 +87,43 @@ const Appointments = () => {
                       <strong>Valor:</strong> {formatCurrency(service?.price || 0)}
                     </div>
 
-                    {appointment.status === 'confirmed' && (
-                      <div className="d-grid">
+                    <div className="d-flex gap-2">
+                      {appointment.status === 'pending' && !appointment.paymentStatus && (
+                        <Button
+                          as={Link}
+                          to={`/app/payment/${appointment.id}`}
+                          variant="success"
+                          size="sm"
+                          className="flex-fill"
+                        >
+                          <FaCreditCard className="me-1" />
+                          Pagar
+                        </Button>
+                      )}
+                      
+                      {(appointment.status === 'confirmed' || appointment.status === 'pending') && (
+                        <Button
+                          as={Link}
+                          to={`/app/reschedule/${appointment.id}`}
+                          variant="outline-primary"
+                          size="sm"
+                          className="flex-fill"
+                        >
+                          <FaCalendarAlt className="me-1" />
+                          Reagendar
+                        </Button>
+                      )}
+                      
+                      {appointment.status !== 'cancelled' && appointment.status !== 'completed' && (
                         <Button
                           variant="outline-danger"
                           size="sm"
                           onClick={() => handleCancelAppointment(appointment.id)}
                         >
-                          Cancelar
+                          <FaTimes />
                         </Button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </Card.Body>
                 </Card>
               </Col>

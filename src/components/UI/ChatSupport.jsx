@@ -1,165 +1,324 @@
-import React, { useState } from 'react'
-import { Button, Modal, Form, ListGroup } from 'react-bootstrap'
-import { FaComments, FaPaperPlane, FaRobot } from 'react-icons/fa'
+import React, { useState, useEffect, useRef } from 'react'
+import { Card, Form, Button, Badge } from 'react-bootstrap'
+import { FaComments, FaTimes, FaPaperPlane, FaUser, FaRobot } from 'react-icons/fa'
+import { useAuth } from '../../context/AuthContext'
+import { chatService } from '../../services/chatService'
 
 const ChatSupport = () => {
-  const [show, setShow] = useState(false)
-  const [messages, setMessages] = useState([
-    { id: 1, text: '👋 Olá! Sou a assistente virtual do TimeRight. Como posso ajudá-lo hoje?', sender: 'support', time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) }
-  ])
+  const { user, isAuthenticated } = useAuth()
+  const [isOpen, setIsOpen] = useState(false)
+  const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState('')
+  const [isTyping, setIsTyping] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
+  const messagesEndRef = useRef(null)
 
-  const getBotResponse = (userMessage) => {
-    const message = userMessage.toLowerCase()
-    
-    // Saudações
-    if (message.includes('oi') || message.includes('olá') || message.includes('ola') || message.includes('hey')) {
-      return '😊 Olá! Que bom te ver por aqui! Em que posso ajudá-lo?'
+  useEffect(() => {
+    if (isOpen && isAuthenticated) {
+      loadMessages()
     }
-    
-    // Agendamento
-    if (message.includes('agendar') || message.includes('marcar') || message.includes('horário')) {
-      return '📅 Para agendar um serviço, você pode clicar em "Agendar Agora" ou ir para nossa área de agendamentos. Precisa de ajuda com algum serviço específico?'
+  }, [isOpen, isAuthenticated])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
+  const loadMessages = async () => {
+    try {
+      const chatMessages = await chatService.getUserMessages(user.id)
+      setMessages(chatMessages)
+      setUnreadCount(0)
+    } catch (error) {
+      console.error('Erro ao carregar mensagens:', error)
     }
-    
-    // Serviços
-    if (message.includes('serviço') || message.includes('cabelo') || message.includes('manicure') || message.includes('maquiagem')) {
-      return '💄 Oferecemos serviços de cabelo, manicure, maquiagem e cuidados com a pele. Você pode ver todos os detalhes na nossa página de serviços. Qual te interessa mais?'
-    }
-    
-    // Preços
-    if (message.includes('preço') || message.includes('valor') || message.includes('quanto custa')) {
-      return '💰 Os preços variam conforme o serviço. Cortes a partir de R$ 35, manicure R$ 25, maquiagem R$ 60. Quer saber sobre algum serviço específico?'
-    }
-    
-    // Horários
-    if (message.includes('horário') || message.includes('funciona') || message.includes('aberto')) {
-      return '🕐 Funcionamos de segunda a sábado, das 9h às 18h. Nosso sistema de agendamento online está disponível 24h!'
-    }
-    
-    // Localização
-    if (message.includes('onde') || message.includes('endereço') || message.includes('localização')) {
-      return '📍 Somos uma plataforma online que conecta você aos melhores salões da sua região. Após o agendamento, você receberá o endereço do profissional escolhido.'
-    }
-    
-    // Cancelamento
-    if (message.includes('cancelar') || message.includes('desmarcar')) {
-      return '❌ Você pode cancelar seu agendamento até 2 horas antes do horário marcado através da sua área de agendamentos. Precisa de ajuda para cancelar?'
-    }
-    
-    // Problemas
-    if (message.includes('problema') || message.includes('erro') || message.includes('não funciona')) {
-      return '🔧 Sinto muito pelo inconveniente! Pode me contar qual problema está enfrentando? Nossa equipe técnica pode ajudar.'
-    }
-    
-    // Despedidas
-    if (message.includes('tchau') || message.includes('obrigad') || message.includes('valeu')) {
-      return '😊 Foi um prazer ajudar! Qualquer dúvida, estarei aqui. Tenha um ótimo dia!'
-    }
-    
-    // Resposta padrão
-    return '🤔 Entendi! Para melhor atendimento, você pode: \n• Agendar serviços na nossa plataforma\n• Ver nossos preços e horários\n• Entrar em contato pelo WhatsApp\n\nEm que mais posso ajudar?'
   }
 
-  const handleSendMessage = (e) => {
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const sendMessage = async (e) => {
     e.preventDefault()
     if (!newMessage.trim()) return
 
-    const userMessage = {
-      id: Date.now(),
+    const message = {
       text: newMessage,
       sender: 'user',
-      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+      timestamp: new Date().toISOString()
     }
 
-    setMessages(prev => [...prev, userMessage])
-    const messageText = newMessage
+    setMessages(prev => [...prev, message])
     setNewMessage('')
+    setIsTyping(true)
 
-    // Resposta automática inteligente
-    setTimeout(() => {
-      const botReply = {
-        id: Date.now() + 1,
-        text: getBotResponse(messageText),
-        sender: 'support',
-        time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-      }
-      setMessages(prev => [...prev, botReply])
-    }, 800)
+    try {
+      await chatService.sendMessage(user.id, message)
+      
+      // Simular resposta automática
+      setTimeout(async () => {
+        const response = await chatService.getAutoResponse(newMessage, user?.role)
+        setMessages(prev => [...prev, {
+          text: response,
+          sender: 'support',
+          timestamp: new Date().toISOString()
+        }])
+        setIsTyping(false)
+      }, 1500)
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error)
+      setIsTyping(false)
+    }
   }
+
+  const quickResponses = [
+    '💇 Agendar serviço',
+    '💳 Formas de pagamento', 
+    '📅 Reagendar/Cancelar',
+    '🕐 Horários de funcionamento',
+    '🎁 Promoções do dia',
+    '📱 Criar conta'
+  ]
+
+  const handleQuickResponse = (text) => {
+    setNewMessage(text)
+  }
+
+  if (!isAuthenticated) return null
 
   return (
     <>
-      <Button
-        className="position-fixed btn-primary-custom"
+      {/* Botão Flutuante */}
+      <div 
+        className="position-fixed"
         style={{ 
           bottom: '20px', 
           right: '20px', 
-          borderRadius: '50px', 
-          zIndex: 1000,
-          width: '60px',
-          height: '60px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 4px 15px rgba(177, 156, 217, 0.4)'
+          zIndex: 1050,
+          cursor: 'pointer'
         }}
-        onClick={() => setShow(true)}
+        onClick={() => setIsOpen(!isOpen)}
       >
-        <FaRobot size={24} />
-      </Button>
+        <div className="position-relative">
+          <div 
+            className="rounded-circle d-flex align-items-center justify-content-center"
+            style={{
+              width: '60px',
+              height: '60px',
+              backgroundColor: '#6f42c1',
+              color: 'white',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+            }}
+          >
+            {isOpen ? <FaTimes size={24} /> : <FaComments size={24} />}
+          </div>
+          {unreadCount > 0 && (
+            <Badge 
+              bg="danger" 
+              pill 
+              className="position-absolute top-0 start-100 translate-middle"
+            >
+              {unreadCount}
+            </Badge>
+          )}
+        </div>
+      </div>
 
-      <Modal show={show} onHide={() => setShow(false)} size="sm">
-        <Modal.Header closeButton style={{background: 'linear-gradient(135deg, #b19cd9 0%, #a68cc9 100%)', color: 'white'}}>
-          <Modal.Title>
-            <FaRobot className="me-2" />
-            Assistente Virtual
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body style={{ height: '300px', overflowY: 'auto' }}>
-          <ListGroup variant="flush">
-            {messages.map(message => (
-              <ListGroup.Item
-                key={message.id}
-                className={`border-0 ${message.sender === 'user' ? 'text-end' : ''}`}
-              >
-                <div
-                  className="d-inline-block p-2 rounded"
-                  style={{ 
-                    maxWidth: '80%',
-                    background: message.sender === 'user' 
-                      ? 'linear-gradient(135deg, #b19cd9 0%, #a68cc9 100%)' 
-                      : '#f8f9fa',
-                    color: message.sender === 'user' ? 'white' : '#6b5b95',
-                    whiteSpace: 'pre-line'
-                  }}
-                >
-                  {message.text}
-                </div>
-                <div className="small text-muted mt-1">
-                  {message.time}
-                </div>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </Modal.Body>
-        <Modal.Footer className="p-2">
-          <Form onSubmit={handleSendMessage} className="w-100">
-            <div className="d-flex">
-              <Form.Control
-                type="text"
-                placeholder="Digite sua mensagem..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                size="sm"
-              />
-              <Button type="submit" size="sm" className="ms-2 btn-primary-custom">
-                <FaPaperPlane />
-              </Button>
+      {/* Chat Window */}
+      {isOpen && (
+        <Card 
+          className="position-fixed"
+          style={{
+            bottom: '90px',
+            right: '20px',
+            width: '350px',
+            height: '500px',
+            zIndex: 1040,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
+          }}
+        >
+          <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
+            <div>
+              <strong>Suporte TimeRight</strong>
+              <div style={{ fontSize: '0.8rem' }}>
+                Online • Resposta rápida
+              </div>
             </div>
-          </Form>
-        </Modal.Footer>
-      </Modal>
+            <Button 
+              variant="link" 
+              className="text-white p-0"
+              onClick={() => setIsOpen(false)}
+            >
+              <FaTimes />
+            </Button>
+          </Card.Header>
+
+          <Card.Body 
+            className="p-0 d-flex flex-column"
+            style={{ height: '400px' }}
+          >
+            {/* Mensagens */}
+            <div 
+              className="flex-grow-1 p-3"
+              style={{ 
+                overflowY: 'auto',
+                maxHeight: '300px'
+              }}
+            >
+              {messages.length === 0 && (
+                <div className="text-center text-muted py-4">
+                  <FaRobot size={40} className="mb-2" />
+                  <div>Olá! Como posso ajudar você hoje?</div>
+                </div>
+              )}
+
+              {messages.map((message, index) => (
+                <div 
+                  key={index}
+                  className={`d-flex mb-3 ${message.sender === 'user' ? 'justify-content-end' : 'justify-content-start'}`}
+                >
+                  <div 
+                    className={`d-flex align-items-start ${message.sender === 'user' ? 'flex-row-reverse' : ''}`}
+                    style={{ maxWidth: '80%' }}
+                  >
+                    <div 
+                      className={`rounded-circle d-flex align-items-center justify-content-center me-2 ms-2`}
+                      style={{
+                        width: '30px',
+                        height: '30px',
+                        backgroundColor: message.sender === 'user' ? '#6f42c1' : '#28a745',
+                        color: 'white',
+                        fontSize: '0.8rem'
+                      }}
+                    >
+                      {message.sender === 'user' ? <FaUser /> : <FaRobot />}
+                    </div>
+                    <div 
+                      className={`p-2 rounded ${
+                        message.sender === 'user' 
+                          ? 'bg-primary text-white' 
+                          : 'bg-light'
+                      }`}
+                    >
+                      {message.text}
+                      <div 
+                        className={`small mt-1 ${
+                          message.sender === 'user' ? 'text-white-50' : 'text-muted'
+                        }`}
+                      >
+                        {new Date(message.timestamp).toLocaleTimeString('pt-BR', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {isTyping && (
+                <div className="d-flex justify-content-start mb-3">
+                  <div className="d-flex align-items-center">
+                    <div 
+                      className="rounded-circle d-flex align-items-center justify-content-center me-2"
+                      style={{
+                        width: '30px',
+                        height: '30px',
+                        backgroundColor: '#28a745',
+                        color: 'white'
+                      }}
+                    >
+                      <FaRobot />
+                    </div>
+                    <div className="bg-light p-2 rounded">
+                      <div className="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Respostas Rápidas */}
+            {messages.length === 0 && (
+              <div className="px-3 pb-2">
+                <div className="small text-muted mb-2">Perguntas frequentes:</div>
+                <div className="d-flex flex-wrap gap-1">
+                  {quickResponses.map((response, index) => (
+                    <Button
+                      key={index}
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={() => handleQuickResponse(response)}
+                      style={{ fontSize: '0.7rem' }}
+                    >
+                      {response}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Input */}
+            <div className="p-3 border-top">
+              <Form onSubmit={sendMessage}>
+                <div className="d-flex gap-2">
+                  <Form.Control
+                    type="text"
+                    placeholder="Digite sua mensagem..."
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    disabled={isTyping}
+                  />
+                  <Button 
+                    type="submit" 
+                    variant="primary"
+                    disabled={!newMessage.trim() || isTyping}
+                  >
+                    <FaPaperPlane />
+                  </Button>
+                </div>
+              </Form>
+            </div>
+          </Card.Body>
+        </Card>
+      )}
+
+      <style jsx>{`
+        .typing-indicator {
+          display: flex;
+          gap: 3px;
+        }
+        
+        .typing-indicator span {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background-color: #999;
+          animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-indicator span:nth-child(1) {
+          animation-delay: -0.32s;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+          animation-delay: -0.16s;
+        }
+        
+        @keyframes typing {
+          0%, 80%, 100% {
+            transform: scale(0);
+          }
+          40% {
+            transform: scale(1);
+          }
+        }
+      `}</style>
     </>
   )
 }

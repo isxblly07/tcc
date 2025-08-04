@@ -3,37 +3,35 @@ import api from './api'
 export const appointmentService = {
   async createAppointment(appointmentData) {
     try {
-      const newAppointment = {
-        ...appointmentData,
-        id: Date.now(),
-        status: 'confirmed',
-        createdAt: new Date().toISOString()
-      }
-      const { data } = await api.post('/appointments', newAppointment)
+      const { data } = await api.post('/appointments', {
+        service_id: appointmentData.serviceId,
+        date: appointmentData.date,
+        time: appointmentData.time
+      })
       return data
     } catch (error) {
       console.error('Erro ao criar agendamento:', error)
-      throw new Error(error.response?.data?.message || 'Erro ao criar agendamento')
+      throw new Error(error.response?.data?.error || 'Erro ao criar agendamento')
     }
   },
 
   async getUserAppointments(userId) {
     try {
-      const { data } = await api.get(`/appointments?userId=${userId}`)
+      const { data } = await api.get('/appointments')
       return data
     } catch (error) {
       console.error('Erro ao buscar agendamentos do usuário:', error)
-      throw new Error(error.response?.data?.message || 'Erro ao buscar agendamentos')
+      throw new Error(error.response?.data?.error || 'Erro ao buscar agendamentos')
     }
   },
 
   async getAllAppointments() {
     try {
-      const { data } = await api.get('/appointments')
+      const { data } = await api.get('/admin/appointments')
       return data
     } catch (error) {
       console.error('Erro ao buscar todos agendamentos:', error)
-      throw new Error(error.response?.data?.message || 'Erro ao buscar agendamentos')
+      throw new Error(error.response?.data?.error || 'Erro ao buscar agendamentos')
     }
   },
 

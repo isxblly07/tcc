@@ -13,8 +13,10 @@ export const serviceService = {
 
   async getService(id) {
     try {
-      const { data } = await api.get(`/services/${id}`)
-      return data
+      const services = await this.getServices()
+      const service = services.find(s => s.id == id)
+      if (!service) throw new Error('Serviço não encontrado')
+      return service
     } catch (error) {
       console.error('Erro ao buscar serviço:', error)
       throw new Error(error.response?.data?.message || 'Erro ao buscar serviço')

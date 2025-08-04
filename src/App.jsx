@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { AuthProvider } from './context/AuthContext'
@@ -7,55 +7,58 @@ import Header from './components/Layout/Header'
 import Footer from './components/Layout/Footer'
 import InstitutionalLayout from './components/Layout/InstitutionalLayout'
 import ProtectedRoute from './components/UI/ProtectedRoute'
+import LoadingSpinner from './components/UI/LoadingSpinner'
+import ErrorBoundary from './components/UI/ErrorBoundary'
 
-// Institutional Pages
-import InstitutionalHome from './pages/institutional/Home'
-import About from './pages/institutional/About'
-import InstitutionalServices from './pages/institutional/Services'
-import InstitutionalBooking from './pages/institutional/Booking'
-import Contact from './pages/institutional/Contact'
-import Design from './pages/institutional/Design'
-
-// Category Pages
-import Hair from './pages/categories/Hair'
-import Nails from './pages/categories/Nails'
-import Makeup from './pages/categories/Makeup'
-import Skincare from './pages/categories/Skincare'
-
-// App Pages
-import Home from './pages/Home'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Services from './pages/Services'
-import Booking from './pages/Booking'
-import Appointments from './pages/Appointments'
-import History from './pages/History'
-import AdminDashboard from './pages/AdminDashboard'
-import Review from './pages/Review'
-import Agenda from './pages/Agenda'
-import Profile from './pages/Profile'
-import Settings from './pages/Settings'
-import Reports from './pages/Reports'
-import ChatSupport from './components/UI/ChatSupport'
+// Lazy load components
+const InstitutionalHome = React.lazy(() => import('./pages/institutional/Home'))
+const About = React.lazy(() => import('./pages/institutional/About'))
+const InstitutionalServices = React.lazy(() => import('./pages/institutional/Services'))
+const InstitutionalBooking = React.lazy(() => import('./pages/institutional/Booking'))
+const Contact = React.lazy(() => import('./pages/institutional/Contact'))
+const Design = React.lazy(() => import('./pages/institutional/Design'))
+const Hair = React.lazy(() => import('./pages/categories/Hair'))
+const Nails = React.lazy(() => import('./pages/categories/Nails'))
+const Makeup = React.lazy(() => import('./pages/categories/Makeup'))
+const Skincare = React.lazy(() => import('./pages/categories/Skincare'))
+const Home = React.lazy(() => import('./pages/Home'))
+const Login = React.lazy(() => import('./pages/Login'))
+const Register = React.lazy(() => import('./pages/Register'))
+const Services = React.lazy(() => import('./pages/Services'))
+const Booking = React.lazy(() => import('./pages/Booking'))
+const Appointments = React.lazy(() => import('./pages/Appointments'))
+const History = React.lazy(() => import('./pages/History'))
+const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'))
+const Review = React.lazy(() => import('./pages/Review'))
+const Agenda = React.lazy(() => import('./pages/Agenda'))
+const Profile = React.lazy(() => import('./pages/Profile'))
+const Settings = React.lazy(() => import('./pages/Settings'))
+const Reports = React.lazy(() => import('./pages/Reports'))
+const Payment = React.lazy(() => import('./pages/Payment'))
+const Reschedule = React.lazy(() => import('./pages/Reschedule'))
+const TwoFactorAuth = React.lazy(() => import('./pages/TwoFactorAuth'))
+const ServiceManagement = React.lazy(() => import('./pages/admin/ServiceManagement'))
+const ChatSupport = React.lazy(() => import('./components/UI/ChatSupport'))
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <Router>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AuthProvider>
+          <Router>
           <Routes>
             {/* Institutional Site Routes */}
             <Route path="/" element={<InstitutionalLayout />}>
-              <Route index element={<InstitutionalHome />} />
-              <Route path="sobre" element={<About />} />
-              <Route path="servicos" element={<InstitutionalServices />} />
-              <Route path="agendamento" element={<InstitutionalBooking />} />
-              <Route path="contato" element={<Contact />} />
-              <Route path="design" element={<Design />} />
-              <Route path="cabelo" element={<Hair />} />
-              <Route path="manicure" element={<Nails />} />
-              <Route path="maquiagem" element={<Makeup />} />
-              <Route path="cuidados" element={<Skincare />} />
+              <Route index element={<Suspense fallback={<LoadingSpinner />}><InstitutionalHome /></Suspense>} />
+              <Route path="sobre" element={<Suspense fallback={<LoadingSpinner />}><About /></Suspense>} />
+              <Route path="servicos" element={<Suspense fallback={<LoadingSpinner />}><InstitutionalServices /></Suspense>} />
+              <Route path="agendamento" element={<Suspense fallback={<LoadingSpinner />}><InstitutionalBooking /></Suspense>} />
+              <Route path="contato" element={<Suspense fallback={<LoadingSpinner />}><Contact /></Suspense>} />
+              <Route path="design" element={<Suspense fallback={<LoadingSpinner />}><Design /></Suspense>} />
+              <Route path="cabelo" element={<Suspense fallback={<LoadingSpinner />}><Hair /></Suspense>} />
+              <Route path="manicure" element={<Suspense fallback={<LoadingSpinner />}><Nails /></Suspense>} />
+              <Route path="maquiagem" element={<Suspense fallback={<LoadingSpinner />}><Makeup /></Suspense>} />
+              <Route path="cuidados" element={<Suspense fallback={<LoadingSpinner />}><Skincare /></Suspense>} />
             </Route>
             
             {/* App Routes */}
@@ -63,9 +66,10 @@ function App() {
               <div className="d-flex flex-column min-vh-100">
                 <Header />
                 <main className="flex-grow-1">
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="services" element={<Services />} />
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="services" element={<Services />} />
                     
                     <Route path="booking/:serviceId" element={
                       <ProtectedRoute>
@@ -120,16 +124,43 @@ function App() {
                         <Reports />
                       </ProtectedRoute>
                     } />
+                    
+                    <Route path="payment/:appointmentId" element={
+                      <ProtectedRoute>
+                        <Payment />
+                      </ProtectedRoute>
+                    } />
+                    
+                    <Route path="reschedule/:appointmentId" element={
+                      <ProtectedRoute>
+                        <Reschedule />
+                      </ProtectedRoute>
+                    } />
+                    
+                    <Route path="two-factor" element={
+                      <ProtectedRoute>
+                        <TwoFactorAuth />
+                      </ProtectedRoute>
+                    } />
+                    
+                    <Route path="admin/services" element={
+                      <ProtectedRoute adminOnly>
+                        <ServiceManagement />
+                      </ProtectedRoute>
+                    } />
                   </Routes>
+                  </Suspense>
                 </main>
                 <Footer />
-                <ChatSupport />
+                <Suspense fallback={null}>
+                  <ChatSupport />
+                </Suspense>
               </div>
             } />
             
             {/* Auth Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Suspense fallback={<LoadingSpinner />}><Login /></Suspense>} />
+            <Route path="/register" element={<Suspense fallback={<LoadingSpinner />}><Register /></Suspense>} />
           </Routes>
           
           <ToastContainer
@@ -143,9 +174,10 @@ function App() {
             draggable
             pauseOnHover
           />
-        </Router>
-      </AuthProvider>
-    </ThemeProvider>
+          </Router>
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   )
 }
 

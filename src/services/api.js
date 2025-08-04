@@ -1,5 +1,9 @@
 import axios from 'axios'
 
+// Cache simples para requisições GET
+const cache = new Map()
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutos
+
 const api = axios.create({
   baseURL: 'http://localhost:3001',
   timeout: 10000,
@@ -11,6 +15,17 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
+    
+    // Cache para requisições GET
+    if (config.method === 'get') {
+      const cacheKey = `${config.url}${JSON.stringify(config.params || {})}`
+      const cached = cache.get(cacheKey)
+      
+      if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        config.adapter = () => Promise.resolve(cached.data)
+      }
+    }
+    
     return config
   },
   (error) => {
@@ -19,7 +34,17 @@ api.interceptors.request.use(
 )
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Armazenar resposta no cache para requisições GET
+    if (response.config.method === 'get') {
+      const cacheKey = `${response.config.url}${JSON.stringify(response.config.params || {})}`
+      cache.set(cacheKey, {
+        data: response,
+        timestamp: Date.now()
+      })
+    }
+    return response
+  },
   (error) => {
     console.error('Erro na API:', error)
     

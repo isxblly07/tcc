@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react'
 import { authService } from '../services/authService'
 
 const AuthContext = createContext()
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user')
   }
 
-  const value = {
+  const value = useMemo(() => ({
     user,
     login,
     register,
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin'
-  }
+  }), [user, loading])
 
   return (
     <AuthContext.Provider value={value}>

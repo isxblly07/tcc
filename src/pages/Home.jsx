@@ -2,6 +2,7 @@ import React from 'react'
 import { Container, Row, Col, Button, Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { FaCut, FaPalette, FaHandPaper, FaEye } from 'react-icons/fa'
+import LazyImage from '../components/UI/LazyImage'
 
 const Home = () => {
   return (
@@ -28,7 +29,7 @@ const Home = () => {
             </Col>
             <Col lg={6}>
               <div className="hero-image">
-                <img 
+                <LazyImage 
                   src="https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
                   alt="Salão de beleza" 
                   className="img-fluid rounded-4"

@@ -47,11 +47,13 @@
 }
 
 .service-card {
-  transition: transform 0.2s;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  will-change: transform;
 }
 
 .service-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
 .appointment-card {
@@ -73,8 +75,40 @@
   border: 1px solid #5a4570;
 }
 
+/* Otimizações de performance */
+.hero-image img,
+.service-card,
+.appointment-card {
+  contain: layout style paint;
+}
+
+/* Preload de fontes críticas */
+@font-face {
+  font-display: swap;
+}
+
+/* Otimizações para mobile */
 @media (max-width: 768px) {
   .container {
     padding: 0 15px;
+  }
+  
+  .hero-section {
+    min-height: 70vh;
+  }
+  
+  .service-preview-card {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Reduzir motion para usuários sensíveis */
+@media (prefers-reduced-motion: reduce) {
+  .service-card {
+    transition: none;
+  }
+  
+  .service-card:hover {
+    transform: none;
   }
 }

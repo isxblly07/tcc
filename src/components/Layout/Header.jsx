@@ -63,6 +63,11 @@ const Header = () => {
                   <FaCog className="me-1" />
                   Configurações
                 </Nav.Link>
+                {isAdmin && (
+                  <Nav.Link as={Link} to="/app/admin/services">
+                    Gerenciar Serviços
+                  </Nav.Link>
+                )}
                 <Button variant="outline-danger" size="sm" onClick={logout}>
                   <FaSignOutAlt className="me-1" />
                   Sair
