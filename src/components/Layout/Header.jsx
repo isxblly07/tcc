@@ -23,16 +23,16 @@ const Header = () => {
             <Nav.Link as={Link} to="/services">Serviços</Nav.Link>
             {isAuthenticated && (
               <>
-                <Nav.Link as={Link} to="/app/agenda">
+                <Nav.Link as={Link} to="/agenda">
                   <FaCalendarAlt className="me-1" />
                   Agenda
                 </Nav.Link>
-                <Nav.Link as={Link} to="/app/appointments">Meus Agendamentos</Nav.Link>
-                <Nav.Link as={Link} to="/app/history">Histórico</Nav.Link>
+                <Nav.Link as={Link} to="/appointments">Meus Agendamentos</Nav.Link>
+                <Nav.Link as={Link} to="/history">Histórico</Nav.Link>
                 {isAdmin && (
                   <>
-                    <Nav.Link as={Link} to="/app/admin">Painel Admin</Nav.Link>
-                    <Nav.Link as={Link} to="/app/reports">
+                    <Nav.Link as={Link} to="/admin">Painel Admin</Nav.Link>
+                    <Nav.Link as={Link} to="/reports">
                       <FaChartBar className="me-1" />
                       Relatórios
                     </Nav.Link>
@@ -55,16 +55,16 @@ const Header = () => {
             
             {isAuthenticated ? (
               <>
-                <Nav.Link as={Link} to="/app/profile">
+                <Nav.Link as={Link} to="/profile">
                   <FaUser className="me-1" />
                   {user?.name}
                 </Nav.Link>
-                <Nav.Link as={Link} to="/app/settings">
+                <Nav.Link as={Link} to="/settings">
                   <FaCog className="me-1" />
                   Configurações
                 </Nav.Link>
                 {isAdmin && (
-                  <Nav.Link as={Link} to="/app/admin/services">
+                  <Nav.Link as={Link} to="/admin/services">
                     Gerenciar Serviços
                   </Nav.Link>
                 )}

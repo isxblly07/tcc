@@ -14,7 +14,8 @@
     "server:json": "json-server --watch db.json --port 3002",
     "start": "node check-server.js && npm run dev",
     "check-server": "node check-server.js",
-    "optimize": "npm run lint:fix && npm run build"
+    "optimize": "npm run lint:fix && npm run build",
+    "rebuild": "npm install && npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^2.9.11",

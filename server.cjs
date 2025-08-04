@@ -144,6 +144,98 @@ app.post('/appointments', authenticateToken, (req, res) => {
   )
 })
 
+// Rotas de Admin
+app.post('/admin/login', (req, res) => {
+  const { email, password } = req.body
+
+  db.get('SELECT * FROM administrators WHERE email = ? AND active = 1', [email], (err, admin) => {
+    if (err) {
+      return res.status(500).json({ error: 'Erro no servidor' })
+    }
+
+    if (!admin || !bcrypt.compareSync(password, admin.password_hash)) {
+      return res.status(401).json({ error: 'Credenciais inválidas' })
+    }
+
+    const token = jwt.sign(
+      { id: admin.id, email: admin.email, role: 'admin' },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    )
+
+    res.json({
+      token,
+      admin: {
+        id: admin.id,
+        name: admin.name,
+        email: admin.email,
+        role: 'admin'
+      }
+    })
+  })
+})
+
+app.post('/admin/register', (req, res) => {
+  const { name, email, password } = req.body
+
+  const hashedPassword = bcrypt.hashSync(password, 10)
+
+  db.run(
+    'INSERT INTO administrators (name, email, password_hash) VALUES (?, ?, ?)',
+    [name, email, hashedPassword],
+    function(err) {
+      if (err) {
+        if (err.message.includes('UNIQUE constraint failed')) {
+          return res.status(400).json({ error: 'Email já cadastrado' })
+        }
+        return res.status(500).json({ error: 'Erro no servidor' })
+      }
+
+      const token = jwt.sign(
+        { id: this.lastID, email, role: 'admin' },
+        JWT_SECRET,
+        { expiresIn: '24h' }
+      )
+
+      res.json({
+        token,
+        admin: {
+          id: this.lastID,
+          name,
+          email,
+          role: 'admin'
+        }
+      })
+    }
+  )
+})
+
+// Dashboard stats
+app.get('/admin/stats', authenticateToken, (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Acesso negado' })
+  }
+
+  const stats = {}
+  
+  db.get('SELECT COUNT(*) as total FROM appointments', (err, result) => {
+    stats.totalAppointments = result?.total || 0
+    
+    db.get('SELECT COUNT(*) as total FROM users', (err, result) => {
+      stats.totalUsers = result?.total || 0
+      
+      db.get('SELECT SUM(s.price) as total FROM appointments a JOIN services s ON a.service_id = s.id WHERE a.status = "completed"', (err, result) => {
+        stats.totalRevenue = result?.total || 0
+        
+        db.get('SELECT COUNT(*) as total FROM services WHERE active = 1', (err, result) => {
+          stats.activeServices = result?.total || 0
+          res.json(stats)
+        })
+      })
+    })
+  })
+})
+
 // Rota para admin - todos os agendamentos
 app.get('/admin/appointments', authenticateToken, (req, res) => {
   if (req.user.role !== 'admin') {
@@ -164,6 +256,60 @@ app.get('/admin/appointments', authenticateToken, (req, res) => {
     }
     res.json(appointments)
   })
+})
+
+// Gerenciar usuários
+app.get('/admin/users', authenticateToken, (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Acesso negado' })
+  }
+
+  db.all('SELECT id, name, email, phone, role, created_at FROM users ORDER BY created_at DESC', (err, users) => {
+    if (err) {
+      return res.status(500).json({ error: 'Erro no servidor' })
+    }
+    res.json(users)
+  })
+})
+
+// Promoções
+app.get('/admin/promotions', authenticateToken, (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Acesso negado' })
+  }
+
+  const query = `
+    SELECT p.*, s.name as service_name
+    FROM promotions p
+    LEFT JOIN services s ON p.service_id = s.id
+    ORDER BY p.created_at DESC
+  `
+  
+  db.all(query, (err, promotions) => {
+    if (err) {
+      return res.status(500).json({ error: 'Erro no servidor' })
+    }
+    res.json(promotions)
+  })
+})
+
+app.post('/admin/promotions', authenticateToken, (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Acesso negado' })
+  }
+
+  const { name, service_id, discount_percent, start_date, end_date } = req.body
+
+  db.run(
+    'INSERT INTO promotions (name, service_id, discount_percent, start_date, end_date) VALUES (?, ?, ?, ?, ?)',
+    [name, service_id, discount_percent, start_date, end_date],
+    function(err) {
+      if (err) {
+        return res.status(500).json({ error: 'Erro no servidor' })
+      }
+      res.json({ id: this.lastID, message: 'Promoção criada com sucesso' })
+    }
+  )
 })
 
 app.listen(PORT, () => {

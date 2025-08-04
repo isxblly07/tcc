@@ -50,9 +50,9 @@ const InstitutionalHeader = () => {
             <Button 
               variant="primary" 
               size="sm"
-              onClick={() => navigate('/app')}
+              onClick={() => navigate('/services')}
             >
-              Ir para App
+              Ver Serviços
             </Button>
           </Nav>
         </Navbar.Collapse>

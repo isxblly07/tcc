@@ -5,26 +5,22 @@ import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import Header from './components/Layout/Header'
 import Footer from './components/Layout/Footer'
-import InstitutionalLayout from './components/Layout/InstitutionalLayout'
 import ProtectedRoute from './components/UI/ProtectedRoute'
 import LoadingSpinner from './components/UI/LoadingSpinner'
 import ErrorBoundary from './components/UI/ErrorBoundary'
 
 // Lazy load components
-const InstitutionalHome = React.lazy(() => import('./pages/institutional/Home'))
+const Home = React.lazy(() => import('./pages/institutional/Home'))
 const About = React.lazy(() => import('./pages/institutional/About'))
-const InstitutionalServices = React.lazy(() => import('./pages/institutional/Services'))
-const InstitutionalBooking = React.lazy(() => import('./pages/institutional/Booking'))
+const Services = React.lazy(() => import('./pages/Services'))
 const Contact = React.lazy(() => import('./pages/institutional/Contact'))
 const Design = React.lazy(() => import('./pages/institutional/Design'))
 const Hair = React.lazy(() => import('./pages/categories/Hair'))
 const Nails = React.lazy(() => import('./pages/categories/Nails'))
 const Makeup = React.lazy(() => import('./pages/categories/Makeup'))
 const Skincare = React.lazy(() => import('./pages/categories/Skincare'))
-const Home = React.lazy(() => import('./pages/Home'))
 const Login = React.lazy(() => import('./pages/Login'))
 const Register = React.lazy(() => import('./pages/Register'))
-const Services = React.lazy(() => import('./pages/Services'))
 const Booking = React.lazy(() => import('./pages/Booking'))
 const Appointments = React.lazy(() => import('./pages/Appointments'))
 const History = React.lazy(() => import('./pages/History'))
@@ -38,7 +34,27 @@ const Payment = React.lazy(() => import('./pages/Payment'))
 const Reschedule = React.lazy(() => import('./pages/Reschedule'))
 const TwoFactorAuth = React.lazy(() => import('./pages/TwoFactorAuth'))
 const ServiceManagement = React.lazy(() => import('./pages/admin/ServiceManagement'))
+const LGPD = React.lazy(() => import('./pages/LGPD'))
 const ChatSupport = React.lazy(() => import('./components/UI/ChatSupport'))
+
+// Admin Pages
+const LoginAdmin = React.lazy(() => import('./pages/admin/LoginAdmin'))
+const RegisterAdmin = React.lazy(() => import('./pages/admin/RegisterAdmin'))
+const Dashboard = React.lazy(() => import('./pages/admin/Dashboard'))
+const ManageUsers = React.lazy(() => import('./pages/admin/ManageUsers'))
+const ManagePromotions = React.lazy(() => import('./pages/admin/ManagePromotions'))
+const PrivateRouteAdmin = React.lazy(() => import('./components/admin/PrivateRouteAdmin'))
+
+const Layout = ({ children }) => (
+  <div className="d-flex flex-column min-vh-100">
+    <Header />
+    <main className="flex-grow-1">{children}</main>
+    <Footer />
+    <Suspense fallback={null}>
+      <ChatSupport />
+    </Suspense>
+  </div>
+)
 
 function App() {
   return (
@@ -46,134 +62,245 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <Router>
-          <Routes>
-            {/* Institutional Site Routes */}
-            <Route path="/" element={<InstitutionalLayout />}>
-              <Route index element={<Suspense fallback={<LoadingSpinner />}><InstitutionalHome /></Suspense>} />
-              <Route path="sobre" element={<Suspense fallback={<LoadingSpinner />}><About /></Suspense>} />
-              <Route path="servicos" element={<Suspense fallback={<LoadingSpinner />}><InstitutionalServices /></Suspense>} />
-              <Route path="agendamento" element={<Suspense fallback={<LoadingSpinner />}><InstitutionalBooking /></Suspense>} />
-              <Route path="contato" element={<Suspense fallback={<LoadingSpinner />}><Contact /></Suspense>} />
-              <Route path="design" element={<Suspense fallback={<LoadingSpinner />}><Design /></Suspense>} />
-              <Route path="cabelo" element={<Suspense fallback={<LoadingSpinner />}><Hair /></Suspense>} />
-              <Route path="manicure" element={<Suspense fallback={<LoadingSpinner />}><Nails /></Suspense>} />
-              <Route path="maquiagem" element={<Suspense fallback={<LoadingSpinner />}><Makeup /></Suspense>} />
-              <Route path="cuidados" element={<Suspense fallback={<LoadingSpinner />}><Skincare /></Suspense>} />
-            </Route>
-            
-            {/* App Routes */}
-            <Route path="/app/*" element={
-              <div className="d-flex flex-column min-vh-100">
-                <Header />
-                <main className="flex-grow-1">
+            <Routes>
+              {/* Main Routes */}
+              <Route path="/" element={
+                <Layout>
                   <Suspense fallback={<LoadingSpinner />}>
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="services" element={<Services />} />
-                    
-                    <Route path="booking/:serviceId" element={
-                      <ProtectedRoute>
-                        <Booking />
-                      </ProtectedRoute>
-                    } />
-                    
-                    <Route path="appointments" element={
-                      <ProtectedRoute>
-                        <Appointments />
-                      </ProtectedRoute>
-                    } />
-                    
-                    <Route path="history" element={
-                      <ProtectedRoute>
-                        <History />
-                      </ProtectedRoute>
-                    } />
-                    
-                    <Route path="admin" element={
-                      <ProtectedRoute adminOnly>
-                        <AdminDashboard />
-                      </ProtectedRoute>
-                    } />
-                    
-                    <Route path="review/:appointmentId" element={
-                      <ProtectedRoute>
-                        <Review />
-                      </ProtectedRoute>
-                    } />
-                    
-                    <Route path="agenda" element={
-                      <ProtectedRoute>
-                        <Agenda />
-                      </ProtectedRoute>
-                    } />
-                    
-                    <Route path="profile" element={
-                      <ProtectedRoute>
-                        <Profile />
-                      </ProtectedRoute>
-                    } />
-                    
-                    <Route path="settings" element={
-                      <ProtectedRoute>
-                        <Settings />
-                      </ProtectedRoute>
-                    } />
-                    
-                    <Route path="reports" element={
-                      <ProtectedRoute adminOnly>
-                        <Reports />
-                      </ProtectedRoute>
-                    } />
-                    
-                    <Route path="payment/:appointmentId" element={
-                      <ProtectedRoute>
-                        <Payment />
-                      </ProtectedRoute>
-                    } />
-                    
-                    <Route path="reschedule/:appointmentId" element={
-                      <ProtectedRoute>
-                        <Reschedule />
-                      </ProtectedRoute>
-                    } />
-                    
-                    <Route path="two-factor" element={
-                      <ProtectedRoute>
-                        <TwoFactorAuth />
-                      </ProtectedRoute>
-                    } />
-                    
-                    <Route path="admin/services" element={
-                      <ProtectedRoute adminOnly>
-                        <ServiceManagement />
-                      </ProtectedRoute>
-                    } />
-                  </Routes>
+                    <Home />
                   </Suspense>
-                </main>
-                <Footer />
-                <Suspense fallback={null}>
-                  <ChatSupport />
+                </Layout>
+              } />
+              
+              <Route path="/sobre" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <About />
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/services" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Services />
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/contato" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Contact />
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/design" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Design />
+                  </Suspense>
+                </Layout>
+              } />
+              
+              {/* Category Routes */}
+              <Route path="/cabelo" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Hair />
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/manicure" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Nails />
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/maquiagem" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Makeup />
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/cuidados" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Skincare />
+                  </Suspense>
+                </Layout>
+              } />
+              
+              {/* Protected Routes */}
+              <Route path="/booking/:serviceId" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute>
+                      <Booking />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/appointments" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute>
+                      <Appointments />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/history" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute>
+                      <History />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/agenda" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute>
+                      <Agenda />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/profile" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/settings" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/lgpd" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute>
+                      <LGPD />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              {/* Admin Routes */}
+              <Route path="/admin" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute adminOnly>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/reports" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute adminOnly>
+                      <Reports />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/admin/services" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute adminOnly>
+                      <ServiceManagement />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              {/* Auth Routes */}
+              <Route path="/login" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Login />
                 </Suspense>
-              </div>
-            } />
+              } />
+              
+              <Route path="/register" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Register />
+                </Suspense>
+              } />
+              
+              {/* Admin Auth Routes */}
+              <Route path="/admin/login" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <LoginAdmin />
+                </Suspense>
+              } />
+              
+              <Route path="/admin/register" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <RegisterAdmin />
+                </Suspense>
+              } />
+              
+              <Route path="/admin/dashboard" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <PrivateRouteAdmin>
+                    <Dashboard />
+                  </PrivateRouteAdmin>
+                </Suspense>
+              } />
+              
+              <Route path="/admin/users" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <PrivateRouteAdmin>
+                    <ManageUsers />
+                  </PrivateRouteAdmin>
+                </Suspense>
+              } />
+              
+              <Route path="/admin/promotions" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <PrivateRouteAdmin>
+                    <ManagePromotions />
+                  </PrivateRouteAdmin>
+                </Suspense>
+              } />
+            </Routes>
             
-            {/* Auth Routes */}
-            <Route path="/login" element={<Suspense fallback={<LoadingSpinner />}><Login /></Suspense>} />
-            <Route path="/register" element={<Suspense fallback={<LoadingSpinner />}><Register /></Suspense>} />
-          </Routes>
-          
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-          />
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
           </Router>
         </AuthProvider>
       </ThemeProvider>
