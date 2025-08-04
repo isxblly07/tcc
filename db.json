@@ -5,16 +5,50 @@
       "name": "João Silva",
       "email": "joao@email.com",
       "phone": "(11) 99999-9999",
-      "password": "123456",
-      "role": "client"
+      "password": "[REDACTED]",
+      "role": "client",
+      "createdAt": "2024-01-01T10:00:00Z",
+      "active": true
     },
     {
       "id": 2,
-      "name": "Admin",
+      "name": "Admin TimeRight",
       "email": "admin@timeright.com",
       "phone": "(11) 88888-8888",
-      "password": "admin123",
-      "role": "admin"
+      "password": "[REDACTED]",
+      "role": "admin",
+      "createdAt": "2024-01-01T08:00:00Z",
+      "active": true
+    },
+    {
+      "id": 3,
+      "name": "Maria Santos",
+      "email": "maria@email.com",
+      "phone": "(11) 77777-7777",
+      "password": "[REDACTED]",
+      "role": "client",
+      "createdAt": "2024-01-05T14:30:00Z",
+      "active": true
+    },
+    {
+      "id": 4,
+      "name": "Carlos Oliveira",
+      "email": "carlos@email.com",
+      "phone": "(11) 66666-6666",
+      "password": "[REDACTED]",
+      "role": "client",
+      "createdAt": "2024-01-10T09:15:00Z",
+      "active": true
+    },
+    {
+      "id": 5,
+      "name": "Ana Costa",
+      "email": "ana@email.com",
+      "phone": "(11) 55555-5555",
+      "password": "[REDACTED]",
+      "role": "client",
+      "createdAt": "2024-01-15T16:45:00Z",
+      "active": true
     }
   ],
   "services": [
@@ -44,304 +78,6 @@
       "duration": 120,
       "description": "Coloração completa com produtos de qualidade",
       "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 4,
-      "name": "Hidratação",
-      "category": "Cabeleireiro",
-      "price": 35.00,
-      "duration": 45,
-      "description": "Hidratação profunda para cabelos ressecados",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 5,
-      "name": "Penteado para Festa",
-      "category": "Cabeleireiro",
-      "price": 60.00,
-      "duration": 90,
-      "description": "Penteado elegante para ocasiões especiais",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 6,
-      "name": "Manicure tradicional com esmaltação",
-      "category": "Manicure",
-      "price": 25.00,
-      "duration": 45,
-      "description": "Lixar, cutilar e esmaltar",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 7,
-      "name": "Manicure com Esfoliação",
-      "category": "Manicure",
-      "price": 35.00,
-      "duration": 60,
-      "description": "Manicure + esfoliação e hidratação",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 8,
-      "name": "Spa das Mãos",
-      "category": "Manicure",
-      "price": 50.00,
-      "duration": 90,
-      "description": "Esfoliação, hidratação, parafina e massagem",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 9,
-      "name": "Esmaltação em Gel",
-      "category": "Manicure",
-      "price": 60.00,
-      "duration": 75,
-      "description": "Esmalte em gel com secagem em cabine UV",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 31,
-      "name": "Blindagem de Unhas",
-      "category": "Manicure",
-      "price": 40.00,
-      "duration": 60,
-      "description": "Fortalecimento com gel/base sem alongamento",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 32,
-      "name": "Francesinha Tradicional ou Reversa",
-      "category": "Manicure",
-      "price": 30.00,
-      "duration": 60,
-      "description": "Esmaltação clássica ou moderna com acabamento especial",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 33,
-      "name": "Nail Art (por unha)",
-      "category": "Manicure",
-      "price": 5.00,
-      "duration": 15,
-      "description": "Pedras, adesivos ou desenhos personalizados",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 34,
-      "name": "Pedicure Tradicional",
-      "category": "Manicure",
-      "price": 30.00,
-      "duration": 60,
-      "description": "Lixar, cutilar e esmaltar",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 35,
-      "name": "Pedicure com Esfoliação",
-      "category": "Manicure",
-      "price": 40.00,
-      "duration": 75,
-      "description": "Pedicure + esfoliação e hidratação",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 36,
-      "name": "Spa dos Pés",
-      "category": "Manicure",
-      "price": 60.00,
-      "duration": 90,
-      "description": "Escalda-pés + esfoliação + parafina e massagem relaxante",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 37,
-      "name": "Esmaltação em Gel nos Pés",
-      "category": "Manicure",
-      "price": 65.00,
-      "duration": 90,
-      "description": "Esmaltação duradoura com brilho e cabine UV",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 38,
-      "name": "Podologia Estética",
-      "category": "Manicure",
-      "price": 50.00,
-      "duration": 75,
-      "description": "Cuidados estéticos com calos e unhas encravadas leves",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 39,
-      "name": "Hidratação Profunda dos Pés",
-      "category": "Manicure",
-      "price": 45.00,
-      "duration": 60,
-      "description": "Máscaras nutritivas, parafina ou cremes com massagem",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 10,
-      "name": "Maquiagem Social",
-      "category": "Maquiagem",
-      "price": 80.00,
-      "duration": 60,
-      "description": "Maquiagem para eventos sociais",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 11,
-      "name": "Maquiagem para Noiva",
-      "category": "Maquiagem",
-      "price": 150.00,
-      "duration": 90,
-      "description": "Maquiagem especial para noivas",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 12,
-      "name": "Maquiagem Profissional",
-      "category": "Maquiagem",
-      "price": 120.00,
-      "duration": 75,
-      "description": "Maquiagem para ensaios e eventos",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 13,
-      "name": "Design de Sobrancelhas",
-      "category": "Maquiagem",
-      "price": 40.00,
-      "duration": 30,
-      "description": "Modelagem e design de sobrancelhas",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 14,
-      "name": "Tratamento Capilar",
-      "category": "Cuidados Capilares",
-      "price": 65.00,
-      "duration": 90,
-      "description": "Tratamento intensivo para cabelos danificados",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 15,
-      "name": "Botox Capilar",
-      "category": "Cuidados Capilares",
-      "price": 95.00,
-      "duration": 120,
-      "description": "Tratamento de botox para cabelos",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 16,
-      "name": "Cronograma Capilar",
-      "category": "Cuidados Capilares",
-      "price": 55.00,
-      "duration": 75,
-      "description": "Cronograma completo de cuidados capilares",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 17,
-      "name": "Cauterização",
-      "category": "Cuidados Capilares",
-      "price": 75.00,
-      "duration": 105,
-      "description": "Cauterização para cabelos muito danificados",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 18,
-      "name": "Corte Masculino",
-      "category": "Cabeleireiro",
-      "price": 30.00,
-      "duration": 45,
-      "description": "Corte masculino moderno e estiloso",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 19,
-      "name": "Barba e Bigode",
-      "category": "Cabeleireiro",
-      "price": 25.00,
-      "duration": 30,
-      "description": "Aparar e modelar barba e bigode",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 20,
-      "name": "Luzes e Mechas",
-      "category": "Cabeleireiro",
-      "price": 90.00,
-      "duration": 150,
-      "description": "Aplicação de luzes e mechas personalizadas",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 21,
-      "name": "Ombré Hair",
-      "category": "Cabeleireiro",
-      "price": 110.00,
-      "duration": 180,
-      "description": "Técnica de coloração degradê",
-      "image": "https://via.placeholder.com/300x200"
-    },
-
-    {
-      "id": 25,
-      "name": "Maquiagem Básica",
-      "category": "Maquiagem",
-      "price": 50.00,
-      "duration": 45,
-      "description": "Maquiagem natural para o dia a dia",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 26,
-      "name": "Micropigmentação de Sobrancelhas",
-      "category": "Maquiagem",
-      "price": 200.00,
-      "duration": 120,
-      "description": "Micropigmentação fio a fio",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 27,
-      "name": "Limpeza de Pele",
-      "category": "Estética",
-      "price": 70.00,
-      "duration": 90,
-      "description": "Limpeza profunda da pele facial",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 28,
-      "name": "Peeling Facial",
-      "category": "Estética",
-      "price": 85.00,
-      "duration": 75,
-      "description": "Peeling químico para renovação celular",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 29,
-      "name": "Hidratação Facial",
-      "category": "Estética",
-      "price": 60.00,
-      "duration": 60,
-      "description": "Hidratação profunda da pele do rosto",
-      "image": "https://via.placeholder.com/300x200"
-    },
-    {
-      "id": 30,
-      "name": "Massagem Relaxante",
-      "category": "Bem-estar",
-      "price": 80.00,
-      "duration": 60,
-      "description": "Massagem corporal para relaxamento",
-      "image": "https://via.placeholder.com/300x200"
     }
   ],
   "professionals": [
@@ -349,91 +85,11 @@
       "id": 1,
       "name": "Ana Silva",
       "specialty": "Cabeleireiro",
-      "services": [1, 2, 3, 4, 5, 18, 20, 21]
-    },
-    {
-      "id": 2,
-      "name": "Carla Santos",
-      "specialty": "Cabeleireiro",
-      "services": [1, 3, 4, 5, 18, 19]
-    },
-    {
-      "id": 3,
-      "name": "Marina Costa",
-      "specialty": "Cabeleireiro",
-      "services": [2, 3, 4, 20, 21]
-    },
-    {
-      "id": 4,
-      "name": "Juliana Oliveira",
-      "specialty": "Manicure",
-      "services": [6, 7, 8, 9, 31, 32, 33, 34, 35, 36, 37, 38, 39]
-    },
-    {
-      "id": 5,
-      "name": "Fernanda Lima",
-      "specialty": "Manicure",
-      "services": [6, 7, 8, 9, 31, 32, 34, 35, 36, 39]
-    },
-    {
-      "id": 6,
-      "name": "Beatriz Rocha",
-      "specialty": "Maquiagem",
-      "services": [10, 11, 12, 13, 25, 26]
-    },
-    {
-      "id": 7,
-      "name": "Camila Ferreira",
-      "specialty": "Maquiagem",
-      "services": [10, 12, 13, 25]
-    },
-    {
-      "id": 8,
-      "name": "Patrícia Mendes",
-      "specialty": "Cuidados Capilares",
-      "services": [14, 15, 16, 17]
-    },
-    {
-      "id": 9,
-      "name": "Roberta Alves",
-      "specialty": "Cuidados Capilares",
-      "services": [14, 16, 17]
-    },
-    {
-      "id": 10,
-      "name": "Larissa Moreira",
-      "specialty": "Estética",
-      "services": [27, 28, 29]
-    },
-    {
-      "id": 11,
-      "name": "Renata Cardoso",
-      "specialty": "Bem-estar",
-      "services": [30]
+      "services": [1, 2, 3]
     }
   ],
-  "appointments": [
-    {
-      "id": 1,
-      "userId": 1,
-      "serviceId": 1,
-      "professionalId": 1,
-      "date": "2024-01-15",
-      "time": "14:00",
-      "status": "confirmed",
-      "createdAt": "2024-01-10T10:00:00Z"
-    }
-  ],
-  "reviews": [
-    {
-      "id": 1,
-      "userId": 1,
-      "serviceId": 1,
-      "rating": 5,
-      "comment": "Excelente serviço!",
-      "createdAt": "2024-01-16T10:00:00Z"
-    }
-  ],
+  "appointments": [],
+  "reviews": [],
   "payments": [],
   "notifications": [],
   "reminders": [],

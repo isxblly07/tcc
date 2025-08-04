@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
 import { FaLock, FaQrcode, FaMobile } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { useAuth } from '../context/AuthContext'
-import { authService } from '../services/authService'
+import authService from '../services/authService'
 
 const TwoFactorAuth = () => {
   const { user } = useAuth()
@@ -67,7 +67,7 @@ const TwoFactorAuth = () => {
             <Card.Body>
               {step === 1 && (
                 <div className="text-center">
-                  <FaShield size={60} className="text-primary mb-3" />
+                  <FaLock size={60} className="text-primary mb-3" />
                   <h5>Proteja sua conta</h5>
                   <p className="text-muted mb-4">
                     A autenticação em dois fatores adiciona uma camada extra de segurança à sua conta.
@@ -139,7 +139,7 @@ const TwoFactorAuth = () => {
               {step === 3 && (
                 <div>
                   <div className="text-center mb-4">
-                    <FaShield size={60} className="text-success mb-3" />
+                    <FaLock size={60} className="text-success mb-3" />
                     <h5 className="text-success">2FA Ativado!</h5>
                     <p className="text-muted">
                       Sua conta agora está protegida com autenticação em dois fatores

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react'
-import { authService } from '../services/authService'
+import authService from '../services/authService'
 
 const AuthContext = createContext()
 
@@ -25,40 +25,40 @@ export const AuthProvider = ({ children }) => {
     setLoading(false)
   }, [])
 
-  const login = async (credentials) => {
-    try {
-      const response = await authService.login(credentials)
+  const login = async (email, password) => {
+    const response = await authService.login(email, password)
+    if (response.success) {
       setUser(response.user)
-      localStorage.setItem('token', response.token)
-      localStorage.setItem('user', JSON.stringify(response.user))
-      return response
-    } catch (error) {
-      throw error
     }
+    return response
   }
 
   const register = async (userData) => {
-    try {
-      const response = await authService.register(userData)
+    const response = await authService.register(userData)
+    if (response.success) {
       setUser(response.user)
-      localStorage.setItem('token', response.token)
-      localStorage.setItem('user', JSON.stringify(response.user))
-      return response
-    } catch (error) {
-      throw error
     }
+    return response
+  }
+
+  const adminLogin = async (email, password) => {
+    const response = await authService.adminLogin(email, password)
+    if (response.success) {
+      setUser(response.user)
+    }
+    return response
   }
 
   const logout = () => {
+    authService.logout()
     setUser(null)
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
   }
 
   const value = useMemo(() => ({
     user,
     login,
     register,
+    adminLogin,
     logout,
     loading,
     isAuthenticated: !!user,

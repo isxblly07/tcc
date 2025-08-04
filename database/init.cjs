@@ -2,6 +2,7 @@ const sqlite3 = require('sqlite3').verbose()
 const bcrypt = require('bcryptjs')
 const path = require('path')
 
+// Initialize database connection
 const dbPath = path.join(__dirname, 'timeright.db')
 const db = new sqlite3.Database(dbPath)
 

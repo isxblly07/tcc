@@ -31,8 +31,8 @@ const Header = () => {
                 <Nav.Link as={Link} to="/history">Histórico</Nav.Link>
                 {isAdmin && (
                   <>
-                    <Nav.Link as={Link} to="/admin">Painel Admin</Nav.Link>
-                    <Nav.Link as={Link} to="/reports">
+                    <Nav.Link as={Link} to="/admin/dashboard">Painel Admin</Nav.Link>
+                    <Nav.Link as={Link} to="/admin/reports">
                       <FaChartBar className="me-1" />
                       Relatórios
                     </Nav.Link>
@@ -68,6 +68,9 @@ const Header = () => {
                     Gerenciar Serviços
                   </Nav.Link>
                 )}
+                <Nav.Link as={Link} to="/admin/login" className="text-muted small">
+                  Admin
+                </Nav.Link>
                 <Button variant="outline-danger" size="sm" onClick={logout}>
                   <FaSignOutAlt className="me-1" />
                   Sair

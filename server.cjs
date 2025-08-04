@@ -4,14 +4,20 @@ const sqlite3 = require('sqlite3').verbose()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const path = require('path')
+const csrf = require('csurf')
 
 const app = express()
-const PORT = 3001
-const JWT_SECRET = 'timeright-secret-key'
+const PORT = process.env.PORT || 3001
+const JWT_SECRET = process.env.JWT_SECRET || 'timeright-dev-secret-key'
+const NODE_ENV = process.env.NODE_ENV || 'development'
 
 // Middleware
 app.use(cors())
 app.use(express.json())
+
+// CSRF Protection (disabled for API endpoints)
+const csrfProtection = csrf({ cookie: true })
+app.use('/api', csrfProtection)
 
 // Conectar ao banco
 const dbPath = path.join(__dirname, 'database', 'timeright.db')

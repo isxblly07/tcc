@@ -38,12 +38,11 @@ const LGPD = React.lazy(() => import('./pages/LGPD'))
 const ChatSupport = React.lazy(() => import('./components/UI/ChatSupport'))
 
 // Admin Pages
-const LoginAdmin = React.lazy(() => import('./pages/admin/LoginAdmin'))
-const RegisterAdmin = React.lazy(() => import('./pages/admin/RegisterAdmin'))
-const Dashboard = React.lazy(() => import('./pages/admin/Dashboard'))
-const ManageUsers = React.lazy(() => import('./pages/admin/ManageUsers'))
-const ManagePromotions = React.lazy(() => import('./pages/admin/ManagePromotions'))
-const PrivateRouteAdmin = React.lazy(() => import('./components/admin/PrivateRouteAdmin'))
+const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'))
+const AdminDashboardNew = React.lazy(() => import('./pages/admin/AdminDashboard'))
+const AdminAppointments = React.lazy(() => import('./pages/admin/AdminAppointments'))
+const AdminServices = React.lazy(() => import('./pages/admin/AdminServices'))
+const AdminReports = React.lazy(() => import('./pages/admin/AdminReports'))
 
 const Layout = ({ children }) => (
   <div className="d-flex flex-column min-vh-100">
@@ -255,38 +254,48 @@ function App() {
               {/* Admin Auth Routes */}
               <Route path="/admin/login" element={
                 <Suspense fallback={<LoadingSpinner />}>
-                  <LoginAdmin />
-                </Suspense>
-              } />
-              
-              <Route path="/admin/register" element={
-                <Suspense fallback={<LoadingSpinner />}>
-                  <RegisterAdmin />
+                  <AdminLogin />
                 </Suspense>
               } />
               
               <Route path="/admin/dashboard" element={
-                <Suspense fallback={<LoadingSpinner />}>
-                  <PrivateRouteAdmin>
-                    <Dashboard />
-                  </PrivateRouteAdmin>
-                </Suspense>
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute adminOnly>
+                      <AdminDashboardNew />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
               } />
               
-              <Route path="/admin/users" element={
-                <Suspense fallback={<LoadingSpinner />}>
-                  <PrivateRouteAdmin>
-                    <ManageUsers />
-                  </PrivateRouteAdmin>
-                </Suspense>
+              <Route path="/admin/appointments" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute adminOnly>
+                      <AdminAppointments />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
               } />
               
-              <Route path="/admin/promotions" element={
-                <Suspense fallback={<LoadingSpinner />}>
-                  <PrivateRouteAdmin>
-                    <ManagePromotions />
-                  </PrivateRouteAdmin>
-                </Suspense>
+              <Route path="/admin/services" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute adminOnly>
+                      <AdminServices />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/admin/reports" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute adminOnly>
+                      <AdminReports />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
               } />
             </Routes>
             
