@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Card, Form, Button, Badge } from 'react-bootstrap'
-import { FaComments, FaTimes, FaPaperPlane, FaUser, FaRobot } from 'react-icons/fa'
+import { FaComments, FaTimes, FaPaperPlane, FaUser, FaRobot, FaCalendarAlt, FaCreditCard } from 'react-icons/fa'
 import { useAuth } from '../../context/AuthContext'
 import { chatService } from '../../services/chatService'
+import { ChatbotEngine } from '../../services/chatbotEngine'
 
 const ChatSupport = () => {
   const { user, isAuthenticated } = useAuth()
@@ -11,6 +12,8 @@ const ChatSupport = () => {
   const [newMessage, setNewMessage] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
+  const [chatEngine] = useState(() => new ChatbotEngine())
+  const [suggestedActions, setSuggestedActions] = useState([])
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
@@ -54,14 +57,17 @@ const ChatSupport = () => {
     try {
       await chatService.sendMessage(user.id, message)
       
-      // Simular resposta automática
+      // Resposta inteligente com IA
       setTimeout(async () => {
-        const response = await chatService.getAutoResponse(newMessage, user?.role)
+        const aiResponse = await chatEngine.processMessage(newMessage, user?.role, user)
         setMessages(prev => [...prev, {
-          text: response,
+          text: aiResponse.response,
           sender: 'support',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          intent: aiResponse.intent,
+          context: aiResponse.context
         }])
+        setSuggestedActions(aiResponse.actions)
         setIsTyping(false)
       }, 1500)
     } catch (error) {

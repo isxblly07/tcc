@@ -10,6 +10,8 @@ const SidebarAdmin = () => {
     { path: '/admin/dashboard', icon: FaTachometerAlt, label: 'Dashboard' },
     { path: '/admin/appointments', icon: FaCalendarAlt, label: 'Agendamentos' },
     { path: '/admin/services', icon: FaCog, label: 'Serviços' },
+    { path: '/admin/professionals', icon: FaUsers, label: 'Profissionais' },
+    { path: '/admin/schedules', icon: FaCalendarAlt, label: 'Horários' },
     { path: '/admin/users', icon: FaUsers, label: 'Usuários' },
     { path: '/admin/reports', icon: FaChartBar, label: 'Relatórios' },
     { path: '/admin/promotions', icon: FaTags, label: 'Promoções' },

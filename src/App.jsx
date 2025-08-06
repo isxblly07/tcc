@@ -43,6 +43,8 @@ const AdminDashboardNew = React.lazy(() => import('./pages/admin/AdminDashboard'
 const AdminAppointments = React.lazy(() => import('./pages/admin/AdminAppointments'))
 const AdminServices = React.lazy(() => import('./pages/admin/AdminServices'))
 const AdminReports = React.lazy(() => import('./pages/admin/AdminReports'))
+const ManageProfessionals = React.lazy(() => import('./pages/admin/ManageProfessionals'))
+const ManageSchedules = React.lazy(() => import('./pages/admin/ManageSchedules'))
 
 const Layout = ({ children }) => (
   <div className="d-flex flex-column min-vh-100">
@@ -293,6 +295,26 @@ function App() {
                   <Suspense fallback={<LoadingSpinner />}>
                     <ProtectedRoute adminOnly>
                       <AdminReports />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/admin/professionals" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute adminOnly>
+                      <ManageProfessionals />
+                    </ProtectedRoute>
+                  </Suspense>
+                </Layout>
+              } />
+              
+              <Route path="/admin/schedules" element={
+                <Layout>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute adminOnly>
+                      <ManageSchedules />
                     </ProtectedRoute>
                   </Suspense>
                 </Layout>
