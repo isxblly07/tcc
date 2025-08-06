@@ -1,7 +1,7 @@
 import React from 'react'
 import { Container, Row, Col, Button, Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { FaCut, FaPalette, FaHandPaper, FaEye } from 'react-icons/fa'
+
 import LazyImage from '../components/UI/LazyImage'
 
 const Home = () => {
@@ -53,7 +53,7 @@ const Home = () => {
             <Col md={3} className="mb-4">
               <div className="service-preview-card">
                 <div className="service-icon">
-                  <FaCut />
+                  ✂️
                 </div>
                 <h5>Cabelo</h5>
                 <p>Cortes, coloração e tratamentos</p>
@@ -62,7 +62,7 @@ const Home = () => {
             <Col md={3} className="mb-4">
               <div className="service-preview-card">
                 <div className="service-icon">
-                  <FaHandPaper />
+                  💅
                 </div>
                 <h5>Manicure</h5>
                 <p>Unhas perfeitas e nail art</p>
@@ -71,7 +71,7 @@ const Home = () => {
             <Col md={3} className="mb-4">
               <div className="service-preview-card">
                 <div className="service-icon">
-                  <FaPalette />
+                  🎨
                 </div>
                 <h5>Maquiagem</h5>
                 <p>Para todas as ocasiões</p>
@@ -80,7 +80,7 @@ const Home = () => {
             <Col md={3} className="mb-4">
               <div className="service-preview-card">
                 <div className="service-icon">
-                  <FaEye />
+                  👀
                 </div>
                 <h5>Cuidados</h5>
                 <p>Tratamentos especializados</p>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { toast } from 'react-toastify'
+
 import api from '../services/api'
 import LoadingSpinner from '../components/UI/LoadingSpinner'
 
@@ -28,7 +28,7 @@ const Services = () => {
       const response = await api.get('/services')
       setServices(response.data)
     } catch (error) {
-      toast.error('Erro ao carregar serviços')
+      alert('Erro ao carregar serviços')
     } finally {
       setLoading(false)
     }

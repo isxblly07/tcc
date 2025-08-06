@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
 import { useParams, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
+
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
 import LoadingSpinner from '../components/UI/LoadingSpinner'
@@ -43,7 +43,7 @@ const Booking = () => {
         p.services.includes(parseInt(serviceId))
       ))
     } catch (error) {
-      toast.error('Erro ao carregar dados')
+      alert('Erro ao carregar dados')
       navigate('/services')
     } finally {
       setLoading(false)
@@ -54,7 +54,7 @@ const Booking = () => {
     e.preventDefault()
     
     if (!formData.professionalId || !formData.date || !formData.time) {
-      toast.error('Preencha todos os campos')
+      alert('Preencha todos os campos')
       return
     }
 
@@ -71,10 +71,10 @@ const Booking = () => {
       }
 
       await api.post('/appointments', appointmentData)
-      toast.success('Agendamento realizado com sucesso!')
+      alert('Agendamento realizado com sucesso!')
       navigate('/appointments')
     } catch (error) {
-      toast.error('Erro ao realizar agendamento')
+      alert('Erro ao realizar agendamento')
     } finally {
       setSubmitting(false)
     }

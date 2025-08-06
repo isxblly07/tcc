@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Offcanvas, Form } from 'react-bootstrap'
-import { FaComments, FaPaperPlane } from 'react-icons/fa'
+
 
 const ChatSupport = () => {
   const [show, setShow] = useState(false)
@@ -43,7 +43,7 @@ const ChatSupport = () => {
         style={{ width: '60px', height: '60px', zIndex: 1050 }}
         onClick={() => setShow(true)}
       >
-        <FaComments size={24} />
+        💬
       </Button>
 
       <Offcanvas show={show} onHide={() => setShow(false)} placement="end">
@@ -83,7 +83,7 @@ const ChatSupport = () => {
                 onChange={(e) => setMessage(e.target.value)}
               />
               <Button type="submit" variant="primary">
-                <FaPaperPlane />
+                ✈️
               </Button>
             </div>
           </Form>

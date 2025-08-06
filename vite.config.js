@@ -14,7 +14,7 @@ export default defineConfig({
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
           ui: ['react-bootstrap', 'bootstrap'],
-          icons: ['react-icons']
+
         }
       }
     },

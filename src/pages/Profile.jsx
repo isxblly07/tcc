@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap'
-import { toast } from 'react-toastify'
+
 import { useAuth } from '../context/AuthContext'
 
 const Profile = () => {
@@ -26,9 +26,9 @@ const Profile = () => {
     try {
       // Simular atualização
       await new Promise(resolve => setTimeout(resolve, 1000))
-      toast.success('Perfil atualizado com sucesso!')
+      alert('Perfil atualizado com sucesso!')
     } catch (error) {
-      toast.error('Erro ao atualizar perfil')
+      alert('Erro ao atualizar perfil')
     } finally {
       setLoading(false)
     }

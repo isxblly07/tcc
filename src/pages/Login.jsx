@@ -1,33 +1,23 @@
 import React, { useState } from 'react'
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { toast } from 'react-toastify'
 import { useAuth } from '../context/AuthContext'
-import { loginSchema } from '../utils/validation'
 
 const Login = () => {
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({
-    resolver: yupResolver(loginSchema)
-  })
+  const [formData, setFormData] = useState({ email: '', password: '' })
 
-  const onSubmit = async (data) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     setLoading(true)
     try {
-      await login(data)
-      toast.success('Login realizado com sucesso!')
+      await login(formData.email, formData.password)
       navigate('/')
     } catch (error) {
-      toast.error(error.message)
+      alert(error.message)
     } finally {
       setLoading(false)
     }
@@ -41,31 +31,27 @@ const Login = () => {
             <Card.Body>
               <h2 className="text-center mb-4">Login</h2>
               
-              <Form onSubmit={handleSubmit(onSubmit)}>
+              <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
                   <Form.Label>Email ou Telefone</Form.Label>
                   <Form.Control
                     type="text"
-                    {...register('email')}
-                    isInvalid={!!errors.email}
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
                     placeholder="Digite seu email ou telefone"
+                    required
                   />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.email?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Form.Label>Senha</Form.Label>
                   <Form.Control
                     type="password"
-                    {...register('password')}
-                    isInvalid={!!errors.password}
+                    value={formData.password}
+                    onChange={(e) => setFormData({...formData, password: e.target.value})}
                     placeholder="Digite sua senha"
+                    required
                   />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.password?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Button

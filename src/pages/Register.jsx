@@ -1,34 +1,34 @@
 import React, { useState } from 'react'
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { toast } from 'react-toastify'
 import { useAuth } from '../context/AuthContext'
-import { registerSchema } from '../utils/validation'
 
 const Register = () => {
   const [loading, setLoading] = useState(false)
   const { register: registerUser } = useAuth()
   const navigate = useNavigate()
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({
-    resolver: yupResolver(registerSchema)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: ''
   })
 
-  const onSubmit = async (data) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (formData.password !== formData.confirmPassword) {
+      alert('Senhas não coincidem')
+      return
+    }
     setLoading(true)
     try {
-      const { confirmPassword, ...userData } = data
+      const { confirmPassword, ...userData } = formData
       await registerUser(userData)
-      toast.success('Conta criada com sucesso!')
       navigate('/')
     } catch (error) {
-      toast.error(error.message)
+      alert(error.message)
     } finally {
       setLoading(false)
     }
@@ -42,70 +42,60 @@ const Register = () => {
             <Card.Body>
               <h2 className="text-center mb-4">Cadastrar</h2>
               
-              <Form onSubmit={handleSubmit(onSubmit)}>
+              <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
                   <Form.Label>Nome Completo</Form.Label>
                   <Form.Control
                     type="text"
-                    {...register('name')}
-                    isInvalid={!!errors.name}
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
                     placeholder="Digite seu nome completo"
+                    required
                   />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.name?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
-                    {...register('email')}
-                    isInvalid={!!errors.email}
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
                     placeholder="Digite seu email"
+                    required
                   />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.email?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Form.Label>Telefone</Form.Label>
                   <Form.Control
                     type="tel"
-                    {...register('phone')}
-                    isInvalid={!!errors.phone}
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     placeholder="(11) 99999-9999"
+                    required
                   />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.phone?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Form.Label>Senha</Form.Label>
                   <Form.Control
                     type="password"
-                    {...register('password')}
-                    isInvalid={!!errors.password}
+                    value={formData.password}
+                    onChange={(e) => setFormData({...formData, password: e.target.value})}
                     placeholder="Digite sua senha"
+                    required
                   />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.password?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Form.Label>Confirmar Senha</Form.Label>
                   <Form.Control
                     type="password"
-                    {...register('confirmPassword')}
-                    isInvalid={!!errors.confirmPassword}
+                    value={formData.confirmPassword}
+                    onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                     placeholder="Confirme sua senha"
+                    required
                   />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.confirmPassword?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Button

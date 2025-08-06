@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Card, Badge, Alert } from 'react-bootstrap'
-import { toast } from 'react-toastify'
+
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
 import LoadingSpinner from '../components/UI/LoadingSpinner'
@@ -32,7 +32,7 @@ const History = () => {
       setServices(servicesRes.data)
       setProfessionals(professionalsRes.data)
     } catch (error) {
-      toast.error('Erro ao carregar histórico')
+      alert('Erro ao carregar histórico')
     } finally {
       setLoading(false)
     }

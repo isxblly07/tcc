@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Card, Badge, Button, Alert } from 'react-bootstrap'
-import { toast } from 'react-toastify'
+
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
 import LoadingSpinner from '../components/UI/LoadingSpinner'
@@ -29,7 +29,7 @@ const Appointments = () => {
       setServices(servicesRes.data)
       setProfessionals(professionalsRes.data)
     } catch (error) {
-      toast.error('Erro ao carregar agendamentos')
+      alert('Erro ao carregar agendamentos')
     } finally {
       setLoading(false)
     }
@@ -68,10 +68,10 @@ const Appointments = () => {
 
     try {
       await api.patch(`/appointments/${appointmentId}`, { status: 'cancelled' })
-      toast.success('Agendamento cancelado com sucesso')
+      alert('Agendamento cancelado com sucesso')
       fetchData()
     } catch (error) {
-      toast.error('Erro ao cancelar agendamento')
+      alert('Erro ao cancelar agendamento')
     }
   }
 

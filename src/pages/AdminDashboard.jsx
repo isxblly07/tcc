@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Card } from 'react-bootstrap'
-import { FaUsers, FaCalendarCheck, FaDollarSign, FaCut } from 'react-icons/fa'
-import { toast } from 'react-toastify'
+
+
 import api from '../services/api'
 import LoadingSpinner from '../components/UI/LoadingSpinner'
 
@@ -44,7 +44,7 @@ const AdminDashboard = () => {
         totalServices: services.length
       })
     } catch (error) {
-      toast.error('Erro ao carregar estatísticas')
+      alert('Erro ao carregar estatísticas')
     } finally {
       setLoading(false)
     }
@@ -56,25 +56,25 @@ const AdminDashboard = () => {
     {
       title: 'Total de Clientes',
       value: stats.totalUsers,
-      icon: FaUsers,
+      icon: '👥',
       color: 'primary'
     },
     {
       title: 'Agendamentos',
       value: stats.totalAppointments,
-      icon: FaCalendarCheck,
+      icon: '📅',
       color: 'success'
     },
     {
       title: 'Receita Total',
       value: `R$ ${stats.totalRevenue.toFixed(2)}`,
-      icon: FaDollarSign,
+      icon: '💰',
       color: 'warning'
     },
     {
       title: 'Serviços Ativos',
       value: stats.totalServices,
-      icon: FaCut,
+      icon: '✂️',
       color: 'info'
     }
   ]
@@ -93,8 +93,8 @@ const AdminDashboard = () => {
           <Col md={6} lg={3} key={index} className="mb-4">
             <Card className="h-100">
               <Card.Body className="text-center">
-                <div className={`text-${stat.color} mb-3`}>
-                  <stat.icon size={40} />
+                <div className={`text-${stat.color} mb-3`} style={{fontSize: '40px'}}>
+                  {stat.icon}
                 </div>
                 <h3 className="mb-1">{stat.value}</h3>
                 <p className="text-muted mb-0">{stat.title}</p>

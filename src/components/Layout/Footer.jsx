@@ -1,6 +1,6 @@
 import React from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
-import { FaFacebook, FaInstagram, FaTwitter, FaWhatsapp } from 'react-icons/fa'
+
 
 const Footer = () => {
   return (
@@ -24,10 +24,10 @@ const Footer = () => {
           <Col md={3}>
             <h6>Redes Sociais</h6>
             <div className="d-flex gap-3">
-              <a href="#" className="text-muted"><FaFacebook size={20} /></a>
-              <a href="#" className="text-muted"><FaInstagram size={20} /></a>
-              <a href="#" className="text-muted"><FaTwitter size={20} /></a>
-              <a href="#" className="text-muted"><FaWhatsapp size={20} /></a>
+              <a href="#" className="text-muted" style={{fontSize: '20px'}}>👥</a>
+              <a href="#" className="text-muted" style={{fontSize: '20px'}}>📷</a>
+              <a href="#" className="text-muted" style={{fontSize: '20px'}}>🐦</a>
+              <a href="#" className="text-muted" style={{fontSize: '20px'}}>📱</a>
             </div>
           </Col>
         </Row>

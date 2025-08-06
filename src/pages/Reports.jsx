@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Card, Table, Badge } from 'react-bootstrap'
-import { toast } from 'react-toastify'
+
 import api from '../services/api'
 import LoadingSpinner from '../components/UI/LoadingSpinner'
 
@@ -29,7 +29,7 @@ const Reports = () => {
       setUsers(usersRes.data)
       setProfessionals(professionalsRes.data)
     } catch (error) {
-      toast.error('Erro ao carregar relatórios')
+      alert('Erro ao carregar relatórios')
     } finally {
       setLoading(false)
     }

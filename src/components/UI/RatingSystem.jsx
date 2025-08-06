@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import { Card, Form, Button, Row, Col } from 'react-bootstrap'
-import { FaStar, FaRegStar, FaUser } from 'react-icons/fa'
-import { toast } from 'react-toastify'
 
 const RatingSystem = ({ appointment, onSubmit, onCancel }) => {
   const [rating, setRating] = useState(0)
@@ -14,7 +12,7 @@ const RatingSystem = ({ appointment, onSubmit, onCancel }) => {
     e.preventDefault()
     
     if (rating === 0) {
-      toast.error('Por favor, selecione uma avaliação')
+      alert('Por favor, selecione uma avaliação')
       return
     }
 
@@ -28,9 +26,9 @@ const RatingSystem = ({ appointment, onSubmit, onCancel }) => {
         comment: comment.trim(),
         anonymous
       })
-      toast.success('Avaliação enviada com sucesso!')
+      alert('Avaliação enviada com sucesso!')
     } catch (error) {
-      toast.error('Erro ao enviar avaliação')
+      alert('Erro ao enviar avaliação')
     } finally {
       setSubmitting(false)
     }
@@ -55,7 +53,7 @@ const RatingSystem = ({ appointment, onSubmit, onCancel }) => {
           onMouseEnter={() => setHoveredRating(i)}
           onMouseLeave={() => setHoveredRating(0)}
         >
-          {isFilled ? <FaStar /> : <FaRegStar />}
+          {isFilled ? '⭐' : '☆'}
         </button>
       )
     }
@@ -80,7 +78,6 @@ const RatingSystem = ({ appointment, onSubmit, onCancel }) => {
       </Card.Header>
       <Card.Body>
         <Form onSubmit={handleSubmit}>
-          {/* Informações do Serviço */}
           <div className="mb-4 p-3 bg-light rounded">
             <Row>
               <Col md={6}>
@@ -94,7 +91,6 @@ const RatingSystem = ({ appointment, onSubmit, onCancel }) => {
             </Row>
           </div>
 
-          {/* Avaliação por Estrelas */}
           <Form.Group className="mb-4">
             <Form.Label className="fw-bold">Como você avalia este serviço?</Form.Label>
             <div className="d-flex align-items-center">
@@ -109,7 +105,6 @@ const RatingSystem = ({ appointment, onSubmit, onCancel }) => {
             </div>
           </Form.Group>
 
-          {/* Comentário */}
           <Form.Group className="mb-3">
             <Form.Label>Comentário (opcional)</Form.Label>
             <Form.Control
@@ -125,7 +120,6 @@ const RatingSystem = ({ appointment, onSubmit, onCancel }) => {
             </Form.Text>
           </Form.Group>
 
-          {/* Avaliação Anônima */}
           <Form.Group className="mb-4">
             <Form.Check
               type="checkbox"
@@ -139,7 +133,6 @@ const RatingSystem = ({ appointment, onSubmit, onCancel }) => {
             </Form.Text>
           </Form.Group>
 
-          {/* Botões */}
           <div className="d-flex justify-content-end gap-2">
             <Button 
               variant="outline-secondary" 
@@ -162,7 +155,6 @@ const RatingSystem = ({ appointment, onSubmit, onCancel }) => {
   )
 }
 
-// Componente para exibir avaliações
 export const ReviewDisplay = ({ reviews, showAll = false }) => {
   const [expanded, setExpanded] = useState({})
 
@@ -177,10 +169,9 @@ export const ReviewDisplay = ({ reviews, showAll = false }) => {
     const stars = []
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <FaStar 
-          key={i} 
-          className={i <= rating ? 'text-warning' : 'text-muted'} 
-        />
+        <span key={i} style={{color: i <= rating ? '#ffc107' : '#dee2e6'}}>
+          ⭐
+        </span>
       )
     }
     return stars
@@ -201,7 +192,7 @@ export const ReviewDisplay = ({ reviews, showAll = false }) => {
                       className="rounded-circle bg-secondary d-flex align-items-center justify-content-center"
                       style={{ width: '40px', height: '40px' }}
                     >
-                      <FaUser className="text-white" />
+                      👤
                     </div>
                   ) : (
                     <div 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
-import { toast } from 'react-toastify'
+
 import { useTheme } from '../context/ThemeContext'
 
 const Settings = () => {
@@ -16,7 +16,7 @@ const Settings = () => {
       ...prev,
       [type]: !prev[type]
     }))
-    toast.success('Configuração atualizada!')
+    alert('Configuração atualizada!')
   }
 
   return (
