@@ -29,16 +29,24 @@ export const AuthProvider = ({ children }) => {
     const response = await authService.login(email, password)
     if (response.success) {
       setUser(response.user)
+      localStorage.setItem('user', JSON.stringify(response.user))
+      localStorage.setItem('token', `token_${response.user.id}`)
+      return response
+    } else {
+      throw new Error(response.message || 'Erro no login')
     }
-    return response
   }
 
   const register = async (userData) => {
     const response = await authService.register(userData)
     if (response.success) {
       setUser(response.user)
+      localStorage.setItem('user', JSON.stringify(response.user))
+      localStorage.setItem('token', `token_${response.user.id}`)
+      return response
+    } else {
+      throw new Error(response.message || 'Erro no cadastro')
     }
-    return response
   }
 
   const adminLogin = async (email, password) => {

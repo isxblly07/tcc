@@ -1,36 +1,32 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Row, Col, Form, Button } from 'react-bootstrap'
-import { useSearchParams } from 'react-router-dom'
+import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { serviceService } from '../services/serviceService'
-import ServiceCard from '../components/UI/ServiceCard'
+import api from '../services/api'
 import LoadingSpinner from '../components/UI/LoadingSpinner'
 
 const Services = () => {
   const [services, setServices] = useState([])
   const [filteredServices, setFilteredServices] = useState([])
   const [loading, setLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState('')
-  const [searchParams] = useSearchParams()
-
-  const categories = ['Cabeleireiro', 'Manicure', 'Maquiagem', 'Cuidados Capilares']
+  const [selectedCategory, setSelectedCategory] = useState('all')
 
   useEffect(() => {
-    loadServices()
-    const category = searchParams.get('category')
-    if (category) {
-      setSelectedCategory(category)
+    fetchServices()
+  }, [])
+
+  useEffect(() => {
+    if (selectedCategory === 'all') {
+      setFilteredServices(services)
+    } else {
+      setFilteredServices(services.filter(service => service.category === selectedCategory))
     }
-  }, [searchParams])
-
-  useEffect(() => {
-    filterServices()
   }, [services, selectedCategory])
 
-  const loadServices = async () => {
+  const fetchServices = async () => {
     try {
-      const data = await serviceService.getServices()
-      setServices(data)
+      const response = await api.get('/services')
+      setServices(response.data)
     } catch (error) {
       toast.error('Erro ao carregar serviços')
     } finally {
@@ -38,69 +34,70 @@ const Services = () => {
     }
   }
 
-  const filterServices = () => {
-    if (selectedCategory) {
-      setFilteredServices(services.filter(service => service.category === selectedCategory))
-    } else {
-      setFilteredServices(services)
-    }
-  }
+  const categories = ['all', 'Cabeleireiro', 'Unhas', 'Maquiagem']
 
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category)
-  }
-
-  if (loading) {
-    return <LoadingSpinner />
-  }
+  if (loading) return <LoadingSpinner />
 
   return (
-    <Container className="py-4">
+    <Container className="py-5">
       <Row className="mb-4">
         <Col>
-          <h1>Nossos Serviços</h1>
-          <p className="text-muted">Escolha o serviço que deseja agendar</p>
-        </Col>
-      </Row>
-
-      <Row className="mb-4">
-        <Col>
-          <div className="d-flex flex-wrap gap-2">
-            <Button
-              variant={selectedCategory === '' ? 'primary' : 'outline-primary'}
-              onClick={() => handleCategoryChange('')}
-            >
-              Todos
-            </Button>
-            {categories.map(category => (
-              <Button
-                key={category}
-                variant={selectedCategory === category ? 'primary' : 'outline-primary'}
-                onClick={() => handleCategoryChange(category)}
-              >
-                {category}
-              </Button>
+          <h1 className="text-center mb-4">Nossos Serviços</h1>
+          
+          <Form.Select 
+            value={selectedCategory} 
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="mb-4"
+            style={{ maxWidth: '300px', margin: '0 auto' }}
+          >
+            <option value="all">Todas as categorias</option>
+            {categories.slice(1).map(category => (
+              <option key={category} value={category}>{category}</option>
             ))}
-          </div>
+          </Form.Select>
         </Col>
       </Row>
 
       <Row>
-        {filteredServices.length > 0 ? (
-          filteredServices.map(service => (
-            <Col md={6} lg={4} key={service.id} className="mb-4">
-              <ServiceCard service={service} />
-            </Col>
-          ))
-        ) : (
-          <Col>
-            <div className="text-center py-5">
-              <h4>Nenhum serviço encontrado</h4>
-              <p className="text-muted">Tente selecionar uma categoria diferente</p>
-            </div>
+        {filteredServices.map(service => (
+          <Col md={6} lg={4} key={service.id} className="mb-4">
+            <Card className="h-100 service-card">
+              <Card.Img 
+                variant="top" 
+                src={service.image} 
+                style={{ height: '200px', objectFit: 'cover' }}
+              />
+              <Card.Body className="d-flex flex-column">
+                <Card.Title>{service.name}</Card.Title>
+                <Card.Text className="text-muted small">{service.category}</Card.Text>
+                <Card.Text className="flex-grow-1">{service.description}</Card.Text>
+                <div className="mt-auto">
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <span className="h5 text-primary mb-0">R$ {service.price.toFixed(2)}</span>
+                    <small className="text-muted">{service.duration} min</small>
+                  </div>
+                  <Button 
+                    as={Link} 
+                    to={`/booking/${service.id}`} 
+                    variant="primary" 
+                    className="w-100"
+                  >
+                    Agendar
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
           </Col>
-        )}
+        ))}
       </Row>
+
+      {filteredServices.length === 0 && (
+        <Row>
+          <Col className="text-center">
+            <p className="text-muted">Nenhum serviço encontrado para esta categoria.</p>
+          </Col>
+        </Row>
+      )}
     </Container>
   )
 }

@@ -1,208 +1,123 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Row, Col, Card, Table, Badge, Button } from 'react-bootstrap'
+import { Container, Row, Col, Card } from 'react-bootstrap'
+import { FaUsers, FaCalendarCheck, FaDollarSign, FaCut } from 'react-icons/fa'
 import { toast } from 'react-toastify'
-import { appointmentService } from '../services/appointmentService'
-import { serviceService } from '../services/serviceService'
-import { formatDate, formatTime, formatCurrency, getStatusColor, getStatusText } from '../utils/helpers'
+import api from '../services/api'
 import LoadingSpinner from '../components/UI/LoadingSpinner'
 
 const AdminDashboard = () => {
-  const [appointments, setAppointments] = useState([])
-  const [services, setServices] = useState([])
-  const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
-    total: 0,
-    confirmed: 0,
-    pending: 0,
-    cancelled: 0
+    totalUsers: 0,
+    totalAppointments: 0,
+    totalRevenue: 0,
+    totalServices: 0
   })
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    loadData()
+    fetchStats()
   }, [])
 
-  const loadData = async () => {
+  const fetchStats = async () => {
     try {
-      const [appointmentsData, servicesData] = await Promise.all([
-        appointmentService.getAllAppointments(),
-        serviceService.getServices()
+      const [usersRes, appointmentsRes, servicesRes] = await Promise.all([
+        api.get('/users'),
+        api.get('/appointments'),
+        api.get('/services')
       ])
-      
-      setAppointments(appointmentsData)
-      setServices(servicesData)
-      calculateStats(appointmentsData)
+
+      const users = usersRes.data.filter(u => u.role === 'client')
+      const appointments = appointmentsRes.data
+      const services = servicesRes.data
+
+      const revenue = appointments
+        .filter(apt => apt.status === 'completed')
+        .reduce((total, apt) => {
+          const service = services.find(s => s.id === apt.serviceId)
+          return total + (service ? service.price : 0)
+        }, 0)
+
+      setStats({
+        totalUsers: users.length,
+        totalAppointments: appointments.length,
+        totalRevenue: revenue,
+        totalServices: services.length
+      })
     } catch (error) {
-      console.error('Erro ao carregar dados:', error)
-      toast.error(`Erro ao carregar dados: ${error.message || 'Verifique se o servidor está rodando'}`)
+      toast.error('Erro ao carregar estatísticas')
     } finally {
       setLoading(false)
     }
   }
 
-  const calculateStats = (appointmentsData) => {
-    const stats = {
-      total: appointmentsData.length,
-      confirmed: appointmentsData.filter(a => a.status === 'confirmed').length,
-      pending: appointmentsData.filter(a => a.status === 'pending').length,
-      cancelled: appointmentsData.filter(a => a.status === 'cancelled').length
+  if (loading) return <LoadingSpinner />
+
+  const statCards = [
+    {
+      title: 'Total de Clientes',
+      value: stats.totalUsers,
+      icon: FaUsers,
+      color: 'primary'
+    },
+    {
+      title: 'Agendamentos',
+      value: stats.totalAppointments,
+      icon: FaCalendarCheck,
+      color: 'success'
+    },
+    {
+      title: 'Receita Total',
+      value: `R$ ${stats.totalRevenue.toFixed(2)}`,
+      icon: FaDollarSign,
+      color: 'warning'
+    },
+    {
+      title: 'Serviços Ativos',
+      value: stats.totalServices,
+      icon: FaCut,
+      color: 'info'
     }
-    setStats(stats)
-  }
-
-  const getServiceById = (serviceId) => {
-    return services.find(service => service.id === serviceId)
-  }
-
-  const handleStatusChange = async (appointmentId, newStatus) => {
-    try {
-      await appointmentService.updateAppointment(appointmentId, { status: newStatus })
-      toast.success('Status atualizado com sucesso!')
-      loadData()
-    } catch (error) {
-      console.error('Erro ao atualizar status:', error)
-      toast.error(`Erro ao atualizar status: ${error.message || 'Tente novamente'}`)
-    }
-  }
-
-  const exportToCSV = () => {
-    const csvData = appointments.map(appointment => {
-      const service = getServiceById(appointment.serviceId)
-      return {
-        ID: appointment.id,
-        Serviço: service?.name || '',
-        Data: formatDate(appointment.date),
-        Horário: formatTime(appointment.time),
-        Status: getStatusText(appointment.status),
-        Valor: service?.price || 0
-      }
-    })
-
-    const csvContent = [
-      Object.keys(csvData[0]).join(','),
-      ...csvData.map(row => Object.values(row).join(','))
-    ].join('\n')
-
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'agendamentos.csv'
-    a.click()
-    window.URL.revokeObjectURL(url)
-  }
-
-  if (loading) {
-    return <LoadingSpinner />
-  }
+  ]
 
   return (
-    <Container className="py-4">
+    <Container className="py-5">
       <Row className="mb-4">
         <Col>
-          <div className="d-flex justify-content-between align-items-center">
-            <h1>Painel Administrativo</h1>
-            <Button variant="success" onClick={exportToCSV}>
-              Exportar CSV
-            </Button>
-          </div>
-        </Col>
-      </Row>
-
-      <Row className="mb-4">
-        <Col md={3}>
-          <Card className="text-center">
-            <Card.Body>
-              <h3 className="text-primary">{stats.total}</h3>
-              <p>Total de Agendamentos</p>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3}>
-          <Card className="text-center">
-            <Card.Body>
-              <h3 className="text-success">{stats.confirmed}</h3>
-              <p>Confirmados</p>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3}>
-          <Card className="text-center">
-            <Card.Body>
-              <h3 className="text-warning">{stats.pending}</h3>
-              <p>Pendentes</p>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3}>
-          <Card className="text-center">
-            <Card.Body>
-              <h3 className="text-danger">{stats.cancelled}</h3>
-              <p>Cancelados</p>
-            </Card.Body>
-          </Card>
+          <h1>Painel Administrativo</h1>
+          <p className="text-muted">Visão geral do sistema</p>
         </Col>
       </Row>
 
       <Row>
+        {statCards.map((stat, index) => (
+          <Col md={6} lg={3} key={index} className="mb-4">
+            <Card className="h-100">
+              <Card.Body className="text-center">
+                <div className={`text-${stat.color} mb-3`}>
+                  <stat.icon size={40} />
+                </div>
+                <h3 className="mb-1">{stat.value}</h3>
+                <p className="text-muted mb-0">{stat.title}</p>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+
+      <Row className="mt-4">
         <Col>
           <Card>
-            <Card.Header>
-              <h4>Agendamentos Recentes</h4>
-            </Card.Header>
             <Card.Body>
-              <Table responsive>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Serviço</th>
-                    <th>Data</th>
-                    <th>Horário</th>
-                    <th>Status</th>
-                    <th>Valor</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {appointments.map(appointment => {
-                    const service = getServiceById(appointment.serviceId)
-                    return (
-                      <tr key={appointment.id}>
-                        <td>{appointment.id}</td>
-                        <td>{service?.name}</td>
-                        <td>{formatDate(appointment.date)}</td>
-                        <td>{formatTime(appointment.time)}</td>
-                        <td>
-                          <Badge bg={getStatusColor(appointment.status)}>
-                            {getStatusText(appointment.status)}
-                          </Badge>
-                        </td>
-                        <td>{formatCurrency(service?.price || 0)}</td>
-                        <td>
-                          {appointment.status === 'confirmed' && (
-                            <Button
-                              size="sm"
-                              variant="outline-success"
-                              onClick={() => handleStatusChange(appointment.id, 'completed')}
-                              className="me-1"
-                            >
-                              Concluir
-                            </Button>
-                          )}
-                          {appointment.status !== 'cancelled' && (
-                            <Button
-                              size="sm"
-                              variant="outline-danger"
-                              onClick={() => handleStatusChange(appointment.id, 'cancelled')}
-                            >
-                              Cancelar
-                            </Button>
-                          )}
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </Table>
+              <h5>Ações Rápidas</h5>
+              <p className="text-muted">
+                Use o menu de navegação para acessar as funcionalidades administrativas:
+              </p>
+              <ul>
+                <li>Gerenciar agendamentos</li>
+                <li>Visualizar relatórios</li>
+                <li>Configurar serviços</li>
+                <li>Gerenciar usuários</li>
+              </ul>
             </Card.Body>
           </Card>
         </Col>

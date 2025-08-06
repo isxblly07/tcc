@@ -1,37 +1,36 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Row, Col, Card, Badge, Button } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Container, Row, Col, Card, Badge, Alert } from 'react-bootstrap'
 import { toast } from 'react-toastify'
-import { appointmentService } from '../services/appointmentService'
-import { serviceService } from '../services/serviceService'
 import { useAuth } from '../context/AuthContext'
-import { formatDate, formatTime, formatCurrency, getStatusColor, getStatusText } from '../utils/helpers'
+import api from '../services/api'
 import LoadingSpinner from '../components/UI/LoadingSpinner'
 
 const History = () => {
   const { user } = useAuth()
   const [appointments, setAppointments] = useState([])
   const [services, setServices] = useState([])
+  const [professionals, setProfessionals] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    loadData()
+    fetchData()
   }, [])
 
-  const loadData = async () => {
+  const fetchData = async () => {
     try {
-      const [appointmentsData, servicesData] = await Promise.all([
-        appointmentService.getUserAppointments(user.id),
-        serviceService.getServices()
+      const [appointmentsRes, servicesRes, professionalsRes] = await Promise.all([
+        api.get('/appointments'),
+        api.get('/services'),
+        api.get('/professionals')
       ])
       
-      // Filtrar apenas agendamentos concluídos ou cancelados
-      const historyAppointments = appointmentsData.filter(
-        appointment => appointment.status === 'completed' || appointment.status === 'cancelled'
-      )
+      const userAppointments = appointmentsRes.data
+        .filter(apt => apt.userId === user.id && apt.status === 'completed')
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
       
-      setAppointments(historyAppointments)
-      setServices(servicesData)
+      setAppointments(userAppointments)
+      setServices(servicesRes.data)
+      setProfessionals(professionalsRes.data)
     } catch (error) {
       toast.error('Erro ao carregar histórico')
     } finally {
@@ -39,86 +38,88 @@ const History = () => {
     }
   }
 
-  const getServiceById = (serviceId) => {
-    return services.find(service => service.id === serviceId)
+  const getServiceName = (serviceId) => {
+    const service = services.find(s => s.id === serviceId)
+    return service ? service.name : 'Serviço não encontrado'
   }
 
-  const handleRepeatBooking = (serviceId) => {
-    // Redirecionar para a página de agendamento do serviço
-    window.location.href = `/booking/${serviceId}`
+  const getServicePrice = (serviceId) => {
+    const service = services.find(s => s.id === serviceId)
+    return service ? service.price : 0
   }
 
-  if (loading) {
-    return <LoadingSpinner />
+  const getProfessionalName = (professionalId) => {
+    const professional = professionals.find(p => p.id === professionalId)
+    return professional ? professional.name : 'Profissional não encontrado'
   }
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('pt-BR')
+  }
+
+  const totalSpent = appointments.reduce((total, apt) => {
+    return total + getServicePrice(apt.serviceId)
+  }, 0)
+
+  if (loading) return <LoadingSpinner />
 
   return (
-    <Container className="py-4">
-      <Row className="mb-4">
-        <Col>
-          <h1>Histórico de Serviços</h1>
-          <p className="text-muted">Seus agendamentos anteriores</p>
-        </Col>
-      </Row>
-
+    <Container className="py-5">
       <Row>
-        {appointments.length > 0 ? (
-          appointments.map(appointment => {
-            const service = getServiceById(appointment.serviceId)
-            return (
-              <Col md={6} lg={4} key={appointment.id} className="mb-4">
-                <Card>
-                  <Card.Body>
-                    <div className="d-flex justify-content-between align-items-start mb-2">
-                      <h5>{service?.name}</h5>
-                      <Badge bg={getStatusColor(appointment.status)}>
-                        {getStatusText(appointment.status)}
-                      </Badge>
-                    </div>
-                    
-                    <p className="text-muted mb-2">{service?.category}</p>
-                    
-                    <div className="mb-3">
-                      <strong>Data:</strong> {formatDate(appointment.date)}<br />
-                      <strong>Horário:</strong> {formatTime(appointment.time)}<br />
-                      <strong>Valor:</strong> {formatCurrency(service?.price || 0)}
-                    </div>
-
-                    {appointment.status === 'completed' && (
-                      <div className="d-grid gap-2">
-                        <Button
-                          variant="primary"
-                          size="sm"
-                          onClick={() => handleRepeatBooking(service.id)}
-                        >
-                          Agendar Novamente
-                        </Button>
-                        <Button
-                          variant="outline-secondary"
-                          size="sm"
-                          as={Link}
-                          to={`/review/${appointment.id}`}
-                        >
-                          Avaliar Serviço
-                        </Button>
+        <Col>
+          <h1 className="mb-4">Histórico de Serviços</h1>
+          
+          {appointments.length > 0 && (
+            <Card className="mb-4">
+              <Card.Body>
+                <Row className="text-center">
+                  <Col md={4}>
+                    <h4>{appointments.length}</h4>
+                    <p className="text-muted">Serviços realizados</p>
+                  </Col>
+                  <Col md={4}>
+                    <h4>R$ {totalSpent.toFixed(2)}</h4>
+                    <p className="text-muted">Total gasto</p>
+                  </Col>
+                  <Col md={4}>
+                    <h4>R$ {(totalSpent / appointments.length).toFixed(2)}</h4>
+                    <p className="text-muted">Ticket médio</p>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          )}
+          
+          {appointments.length === 0 ? (
+            <Alert variant="info">
+              Você ainda não possui histórico de serviços realizados.
+            </Alert>
+          ) : (
+            <Row>
+              {appointments.map(appointment => (
+                <Col md={6} lg={4} key={appointment.id} className="mb-4">
+                  <Card>
+                    <Card.Body>
+                      <div className="d-flex justify-content-between align-items-start mb-3">
+                        <Card.Title className="mb-0">
+                          {getServiceName(appointment.serviceId)}
+                        </Card.Title>
+                        <Badge bg="success">Concluído</Badge>
                       </div>
-                    )}
-                  </Card.Body>
-                </Card>
-              </Col>
-            )
-          })
-        ) : (
-          <Col>
-            <div className="text-center py-5">
-              <h4>Nenhum histórico encontrado</h4>
-              <p className="text-muted">Você ainda não possui serviços concluídos</p>
-              <Button as={Link} to="/services" variant="primary">
-                Agendar Primeiro Serviço
-              </Button>
-            </div>
-          </Col>
-        )}
+                      
+                      <Card.Text>
+                        <strong>Profissional:</strong> {getProfessionalName(appointment.professionalId)}<br/>
+                        <strong>Data:</strong> {formatDate(appointment.date)}<br/>
+                        <strong>Horário:</strong> {appointment.time}<br/>
+                        <strong>Valor:</strong> R$ {getServicePrice(appointment.serviceId).toFixed(2)}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          )}
+        </Col>
       </Row>
     </Container>
   )

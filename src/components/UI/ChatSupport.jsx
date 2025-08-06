@@ -1,330 +1,94 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Card, Form, Button, Badge } from 'react-bootstrap'
-import { FaComments, FaTimes, FaPaperPlane, FaUser, FaRobot, FaCalendarAlt, FaCreditCard } from 'react-icons/fa'
-import { useAuth } from '../../context/AuthContext'
-import { chatService } from '../../services/chatService'
-import { ChatbotEngine } from '../../services/chatbotEngine'
+import React, { useState } from 'react'
+import { Button, Offcanvas, Form } from 'react-bootstrap'
+import { FaComments, FaPaperPlane } from 'react-icons/fa'
 
 const ChatSupport = () => {
-  const { user, isAuthenticated } = useAuth()
-  const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState([])
-  const [newMessage, setNewMessage] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
-  const [unreadCount, setUnreadCount] = useState(0)
-  const [chatEngine] = useState(() => new ChatbotEngine())
-  const [suggestedActions, setSuggestedActions] = useState([])
-  const messagesEndRef = useRef(null)
+  const [show, setShow] = useState(false)
+  const [message, setMessage] = useState('')
+  const [messages, setMessages] = useState([
+    { id: 1, text: 'Olá! Como posso ajudá-lo?', sender: 'support', time: new Date() }
+  ])
 
-  useEffect(() => {
-    if (isOpen && isAuthenticated) {
-      loadMessages()
-    }
-  }, [isOpen, isAuthenticated])
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-
-  const loadMessages = async () => {
-    try {
-      const chatMessages = await chatService.getUserMessages(user.id)
-      setMessages(chatMessages)
-      setUnreadCount(0)
-    } catch (error) {
-      console.error('Erro ao carregar mensagens:', error)
-    }
-  }
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const sendMessage = async (e) => {
+  const handleSend = (e) => {
     e.preventDefault()
-    if (!newMessage.trim()) return
+    if (!message.trim()) return
 
-    const message = {
-      text: newMessage,
+    const newMessage = {
+      id: Date.now(),
+      text: message,
       sender: 'user',
-      timestamp: new Date().toISOString()
+      time: new Date()
     }
 
-    setMessages(prev => [...prev, message])
-    setNewMessage('')
-    setIsTyping(true)
+    setMessages(prev => [...prev, newMessage])
+    setMessage('')
 
-    try {
-      await chatService.sendMessage(user.id, message)
-      
-      // Resposta inteligente com IA
-      setTimeout(async () => {
-        const aiResponse = await chatEngine.processMessage(newMessage, user?.role, user)
-        setMessages(prev => [...prev, {
-          text: aiResponse.response,
-          sender: 'support',
-          timestamp: new Date().toISOString(),
-          intent: aiResponse.intent,
-          context: aiResponse.context
-        }])
-        setSuggestedActions(aiResponse.actions)
-        setIsTyping(false)
-      }, 1500)
-    } catch (error) {
-      console.error('Erro ao enviar mensagem:', error)
-      setIsTyping(false)
-    }
+    // Simular resposta automática
+    setTimeout(() => {
+      const autoReply = {
+        id: Date.now() + 1,
+        text: 'Obrigado pela sua mensagem! Nossa equipe entrará em contato em breve.',
+        sender: 'support',
+        time: new Date()
+      }
+      setMessages(prev => [...prev, autoReply])
+    }, 1000)
   }
-
-  const quickResponses = [
-    '💇 Agendar serviço',
-    '💳 Formas de pagamento', 
-    '📅 Reagendar/Cancelar',
-    '🕐 Horários de funcionamento',
-    '🎁 Promoções do dia',
-    '📱 Criar conta'
-  ]
-
-  const handleQuickResponse = (text) => {
-    setNewMessage(text)
-  }
-
-  if (!isAuthenticated) return null
 
   return (
     <>
-      {/* Botão Flutuante */}
-      <div 
-        className="position-fixed"
-        style={{ 
-          bottom: '20px', 
-          right: '20px', 
-          zIndex: 1050,
-          cursor: 'pointer'
-        }}
-        onClick={() => setIsOpen(!isOpen)}
+      <Button
+        variant="primary"
+        className="position-fixed bottom-0 end-0 m-4 rounded-circle"
+        style={{ width: '60px', height: '60px', zIndex: 1050 }}
+        onClick={() => setShow(true)}
       >
-        <div className="position-relative">
-          <div 
-            className="rounded-circle d-flex align-items-center justify-content-center"
-            style={{
-              width: '60px',
-              height: '60px',
-              backgroundColor: '#6f42c1',
-              color: 'white',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
-            }}
-          >
-            {isOpen ? <FaTimes size={24} /> : <FaComments size={24} />}
-          </div>
-          {unreadCount > 0 && (
-            <Badge 
-              bg="danger" 
-              pill 
-              className="position-absolute top-0 start-100 translate-middle"
-            >
-              {unreadCount}
-            </Badge>
-          )}
-        </div>
-      </div>
+        <FaComments size={24} />
+      </Button>
 
-      {/* Chat Window */}
-      {isOpen && (
-        <Card 
-          className="position-fixed"
-          style={{
-            bottom: '90px',
-            right: '20px',
-            width: '350px',
-            height: '500px',
-            zIndex: 1040,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
-          }}
-        >
-          <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
-            <div>
-              <strong>Suporte TimeRight</strong>
-              <div style={{ fontSize: '0.8rem' }}>
-                Online • Resposta rápida
-              </div>
-            </div>
-            <Button 
-              variant="link" 
-              className="text-white p-0"
-              onClick={() => setIsOpen(false)}
-            >
-              <FaTimes />
-            </Button>
-          </Card.Header>
-
-          <Card.Body 
-            className="p-0 d-flex flex-column"
-            style={{ height: '400px' }}
-          >
-            {/* Mensagens */}
-            <div 
-              className="flex-grow-1 p-3"
-              style={{ 
-                overflowY: 'auto',
-                maxHeight: '300px'
-              }}
-            >
-              {messages.length === 0 && (
-                <div className="text-center text-muted py-4">
-                  <FaRobot size={40} className="mb-2" />
-                  <div>Olá! Como posso ajudar você hoje?</div>
-                </div>
-              )}
-
-              {messages.map((message, index) => (
-                <div 
-                  key={index}
-                  className={`d-flex mb-3 ${message.sender === 'user' ? 'justify-content-end' : 'justify-content-start'}`}
+      <Offcanvas show={show} onHide={() => setShow(false)} placement="end">
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Suporte</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body className="d-flex flex-column">
+          <div className="flex-grow-1 mb-3" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            {messages.map(msg => (
+              <div
+                key={msg.id}
+                className={`mb-2 ${msg.sender === 'user' ? 'text-end' : 'text-start'}`}
+              >
+                <div
+                  className={`d-inline-block p-2 rounded ${
+                    msg.sender === 'user' 
+                      ? 'bg-primary text-white' 
+                      : 'bg-light text-dark'
+                  }`}
+                  style={{ maxWidth: '80%' }}
                 >
-                  <div 
-                    className={`d-flex align-items-start ${message.sender === 'user' ? 'flex-row-reverse' : ''}`}
-                    style={{ maxWidth: '80%' }}
-                  >
-                    <div 
-                      className={`rounded-circle d-flex align-items-center justify-content-center me-2 ms-2`}
-                      style={{
-                        width: '30px',
-                        height: '30px',
-                        backgroundColor: message.sender === 'user' ? '#6f42c1' : '#28a745',
-                        color: 'white',
-                        fontSize: '0.8rem'
-                      }}
-                    >
-                      {message.sender === 'user' ? <FaUser /> : <FaRobot />}
-                    </div>
-                    <div 
-                      className={`p-2 rounded ${
-                        message.sender === 'user' 
-                          ? 'bg-primary text-white' 
-                          : 'bg-light'
-                      }`}
-                    >
-                      {message.text}
-                      <div 
-                        className={`small mt-1 ${
-                          message.sender === 'user' ? 'text-white-50' : 'text-muted'
-                        }`}
-                      >
-                        {new Date(message.timestamp).toLocaleTimeString('pt-BR', {
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </div>
-                    </div>
-                  </div>
+                  {msg.text}
                 </div>
-              ))}
-
-              {isTyping && (
-                <div className="d-flex justify-content-start mb-3">
-                  <div className="d-flex align-items-center">
-                    <div 
-                      className="rounded-circle d-flex align-items-center justify-content-center me-2"
-                      style={{
-                        width: '30px',
-                        height: '30px',
-                        backgroundColor: '#28a745',
-                        color: 'white'
-                      }}
-                    >
-                      <FaRobot />
-                    </div>
-                    <div className="bg-light p-2 rounded">
-                      <div className="typing-indicator">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Respostas Rápidas */}
-            {messages.length === 0 && (
-              <div className="px-3 pb-2">
-                <div className="small text-muted mb-2">Perguntas frequentes:</div>
-                <div className="d-flex flex-wrap gap-1">
-                  {quickResponses.map((response, index) => (
-                    <Button
-                      key={index}
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={() => handleQuickResponse(response)}
-                      style={{ fontSize: '0.7rem' }}
-                    >
-                      {response}
-                    </Button>
-                  ))}
+                <div className="small text-muted">
+                  {msg.time.toLocaleTimeString()}
                 </div>
               </div>
-            )}
-
-            {/* Input */}
-            <div className="p-3 border-top">
-              <Form onSubmit={sendMessage}>
-                <div className="d-flex gap-2">
-                  <Form.Control
-                    type="text"
-                    placeholder="Digite sua mensagem..."
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    disabled={isTyping}
-                  />
-                  <Button 
-                    type="submit" 
-                    variant="primary"
-                    disabled={!newMessage.trim() || isTyping}
-                  >
-                    <FaPaperPlane />
-                  </Button>
-                </div>
-              </Form>
+            ))}
+          </div>
+          
+          <Form onSubmit={handleSend}>
+            <div className="d-flex gap-2">
+              <Form.Control
+                type="text"
+                placeholder="Digite sua mensagem..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <Button type="submit" variant="primary">
+                <FaPaperPlane />
+              </Button>
             </div>
-          </Card.Body>
-        </Card>
-      )}
-
-      <style jsx>{`
-        .typing-indicator {
-          display: flex;
-          gap: 3px;
-        }
-        
-        .typing-indicator span {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background-color: #999;
-          animation: typing 1.4s infinite ease-in-out;
-        }
-        
-        .typing-indicator span:nth-child(1) {
-          animation-delay: -0.32s;
-        }
-        
-        .typing-indicator span:nth-child(2) {
-          animation-delay: -0.16s;
-        }
-        
-        @keyframes typing {
-          0%, 80%, 100% {
-            transform: scale(0);
-          }
-          40% {
-            transform: scale(1);
-          }
-        }
-      `}</style>
+          </Form>
+        </Offcanvas.Body>
+      </Offcanvas>
     </>
   )
 }

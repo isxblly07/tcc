@@ -23,7 +23,7 @@ const Header = () => {
             <Nav.Link as={Link} to="/services">Serviços</Nav.Link>
             {isAuthenticated && (
               <>
-                <Nav.Link as={Link} to="/agenda">
+                <Nav.Link as={Link} to="/appointments">
                   <FaCalendarAlt className="me-1" />
                   Agenda
                 </Nav.Link>
@@ -31,8 +31,8 @@ const Header = () => {
                 <Nav.Link as={Link} to="/history">Histórico</Nav.Link>
                 {isAdmin && (
                   <>
-                    <Nav.Link as={Link} to="/admin/dashboard">Painel Admin</Nav.Link>
-                    <Nav.Link as={Link} to="/admin/reports">
+                    <Nav.Link as={Link} to="/admin">Painel Admin</Nav.Link>
+                    <Nav.Link as={Link} to="/reports">
                       <FaChartBar className="me-1" />
                       Relatórios
                     </Nav.Link>
@@ -63,14 +63,7 @@ const Header = () => {
                   <FaCog className="me-1" />
                   Configurações
                 </Nav.Link>
-                {isAdmin && (
-                  <Nav.Link as={Link} to="/admin/services">
-                    Gerenciar Serviços
-                  </Nav.Link>
-                )}
-                <Nav.Link as={Link} to="/admin/login" className="text-muted small">
-                  Admin
-                </Nav.Link>
+
                 <Button variant="outline-danger" size="sm" onClick={logout}>
                   <FaSignOutAlt className="me-1" />
                   Sair

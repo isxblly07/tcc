@@ -1,40 +1,42 @@
 import React from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import { FaFacebook, FaInstagram, FaTwitter, FaWhatsapp } from 'react-icons/fa'
 
 const Footer = () => {
-  const { isAuthenticated } = useAuth()
-  
   return (
-    <footer className="bg-dark text-light py-4 mt-5">
+    <footer className="bg-dark text-light py-4 mt-auto">
       <Container>
         <Row>
-          <Col md={4}>
+          <Col md={6}>
             <h5>TimeRight</h5>
-            <p>Sistema de agendamento online para diversos serviços.</p>
+            <p className="text-muted">
+              Sistema completo de agendamento online para salões de beleza.
+            </p>
           </Col>
-          <Col md={4}>
+          <Col md={3}>
             <h6>Links Úteis</h6>
-            <div className="d-flex flex-column">
-              <Link to="/sobre" className="text-light mb-1">Sobre Nós</Link>
-              <Link to="/servicos" className="text-light mb-1">Serviços</Link>
-              <Link to="/contato" className="text-light mb-1">Contato</Link>
-              {isAuthenticated && (
-                <Link to="/lgpd" className="text-light mb-1">LGPD</Link>
-              )}
+            <ul className="list-unstyled">
+              <li><a href="/services" className="text-muted">Serviços</a></li>
+              <li><a href="/about" className="text-muted">Sobre</a></li>
+              <li><a href="/contact" className="text-muted">Contato</a></li>
+            </ul>
+          </Col>
+          <Col md={3}>
+            <h6>Redes Sociais</h6>
+            <div className="d-flex gap-3">
+              <a href="#" className="text-muted"><FaFacebook size={20} /></a>
+              <a href="#" className="text-muted"><FaInstagram size={20} /></a>
+              <a href="#" className="text-muted"><FaTwitter size={20} /></a>
+              <a href="#" className="text-muted"><FaWhatsapp size={20} /></a>
             </div>
           </Col>
-          <Col md={4}>
-            <h6>Contato</h6>
-            <p>Email: contato@timeright.com</p>
-            <p>Telefone: (11) 9999-9999</p>
-          </Col>
         </Row>
-        <hr />
+        <hr className="my-4" />
         <Row>
           <Col className="text-center">
-            <p>&copy; 2024 TimeRight. Todos os direitos reservados.</p>
+            <p className="text-muted mb-0">
+              © 2024 TimeRight. Todos os direitos reservados.
+            </p>
           </Col>
         </Row>
       </Container>

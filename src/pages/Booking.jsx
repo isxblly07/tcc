@@ -1,178 +1,179 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap'
+import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { toast } from 'react-toastify'
-import { serviceService } from '../services/serviceService'
-import { appointmentService } from '../services/appointmentService'
 import { useAuth } from '../context/AuthContext'
-import { appointmentSchema } from '../utils/validation'
-import { formatCurrency } from '../utils/helpers'
+import api from '../services/api'
 import LoadingSpinner from '../components/UI/LoadingSpinner'
 
 const Booking = () => {
   const { serviceId } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
+  
   const [service, setService] = useState(null)
   const [professionals, setProfessionals] = useState([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({
-    resolver: yupResolver(appointmentSchema)
+  
+  const [formData, setFormData] = useState({
+    professionalId: '',
+    date: '',
+    time: ''
   })
 
+  const timeSlots = [
+    '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+    '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00'
+  ]
+
   useEffect(() => {
-    loadData()
+    fetchServiceAndProfessionals()
   }, [serviceId])
 
-  const loadData = async () => {
+  const fetchServiceAndProfessionals = async () => {
     try {
-      const [serviceData, professionalsData] = await Promise.all([
-        serviceService.getService(serviceId),
-        serviceService.getProfessionals()
+      const [serviceResponse, professionalsResponse] = await Promise.all([
+        api.get(`/services/${serviceId}`),
+        api.get('/professionals')
       ])
       
-      setService(serviceData)
-      setProfessionals(professionalsData.filter(p => 
+      setService(serviceResponse.data)
+      setProfessionals(professionalsResponse.data.filter(p => 
         p.services.includes(parseInt(serviceId))
       ))
     } catch (error) {
-      console.error('Erro ao carregar dados:', error)
-      toast.error(`Erro ao carregar dados: ${error.message || 'Verifique se o servidor está rodando'}`)
+      toast.error('Erro ao carregar dados')
       navigate('/services')
     } finally {
       setLoading(false)
     }
   }
 
-  const onSubmit = async (data) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    
+    if (!formData.professionalId || !formData.date || !formData.time) {
+      toast.error('Preencha todos os campos')
+      return
+    }
+
     setSubmitting(true)
     try {
-      await appointmentService.createAppointment({
-        ...data,
+      const appointmentData = {
         userId: user.id,
-        serviceId: parseInt(serviceId)
-      })
+        serviceId: parseInt(serviceId),
+        professionalId: parseInt(formData.professionalId),
+        date: formData.date,
+        time: formData.time,
+        status: 'confirmed',
+        createdAt: new Date().toISOString()
+      }
+
+      await api.post('/appointments', appointmentData)
       toast.success('Agendamento realizado com sucesso!')
       navigate('/appointments')
     } catch (error) {
-      console.error('Erro ao criar agendamento:', error)
-      toast.error(`Erro ao criar agendamento: ${error.message || 'Tente novamente'}`)
+      toast.error('Erro ao realizar agendamento')
     } finally {
       setSubmitting(false)
     }
   }
 
-  if (loading) {
-    return <LoadingSpinner />
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
   }
+
+  if (loading) return <LoadingSpinner />
 
   if (!service) {
     return (
       <Container className="py-5">
-        <div className="text-center">
-          <h3>Serviço não encontrado</h3>
-        </div>
+        <Alert variant="danger">Serviço não encontrado</Alert>
       </Container>
     )
   }
 
-  const timeSlots = [
-    '08:00', '09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00'
-  ]
-
   return (
-    <Container className="py-4">
-      <Row>
-        <Col md={6}>
-          <Card>
-            <Card.Img variant="top" src={service.image} />
-            <Card.Body>
-              <h3>{service.name}</h3>
-              <p>{service.description}</p>
-              <div className="d-flex justify-content-between">
-                <strong>{formatCurrency(service.price)}</strong>
-                <span>{service.duration} minutos</span>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        
-        <Col md={6}>
+    <Container className="py-5">
+      <Row className="justify-content-center">
+        <Col md={8}>
           <Card>
             <Card.Body>
-              <h4>Agendar Serviço</h4>
+              <h2 className="mb-4">Agendar Serviço</h2>
               
-              <Form onSubmit={handleSubmit(onSubmit)}>
+              <div className="mb-4 p-3 bg-light rounded">
+                <h5>{service.name}</h5>
+                <p className="text-muted mb-1">{service.description}</p>
+                <div className="d-flex justify-content-between">
+                  <span><strong>Preço:</strong> R$ {service.price.toFixed(2)}</span>
+                  <span><strong>Duração:</strong> {service.duration} min</span>
+                </div>
+              </div>
+
+              <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
                   <Form.Label>Profissional</Form.Label>
                   <Form.Select
-                    {...register('professionalId')}
-                    isInvalid={!!errors.professionalId}
+                    name="professionalId"
+                    value={formData.professionalId}
+                    onChange={handleChange}
+                    required
                   >
                     <option value="">Selecione um profissional</option>
                     {professionals.map(professional => (
                       <option key={professional.id} value={professional.id}>
-                        {professional.name}
+                        {professional.name} - {professional.specialty}
                       </option>
                     ))}
                   </Form.Select>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.professionalId?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Form.Label>Data</Form.Label>
                   <Form.Control
                     type="date"
-                    {...register('date')}
-                    isInvalid={!!errors.date}
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
                     min={new Date().toISOString().split('T')[0]}
+                    required
                   />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.date?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-4">
                   <Form.Label>Horário</Form.Label>
                   <Form.Select
-                    {...register('time')}
-                    isInvalid={!!errors.time}
+                    name="time"
+                    value={formData.time}
+                    onChange={handleChange}
+                    required
                   >
                     <option value="">Selecione um horário</option>
                     {timeSlots.map(time => (
-                      <option key={time} value={time}>
-                        {time}
-                      </option>
+                      <option key={time} value={time}>{time}</option>
                     ))}
                   </Form.Select>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.time?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
 
-                <div className="d-grid gap-2">
+                <div className="d-flex gap-2">
                   <Button
                     type="submit"
                     variant="primary"
                     disabled={submitting}
+                    className="flex-grow-1"
                   >
                     {submitting ? 'Agendando...' : 'Confirmar Agendamento'}
                   </Button>
                   <Button
+                    type="button"
                     variant="outline-secondary"
                     onClick={() => navigate('/services')}
                   >
-                    Voltar
+                    Cancelar
                   </Button>
                 </div>
               </Form>

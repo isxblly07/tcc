@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Alert, Button } from 'react-bootstrap'
+import { Alert, Container, Button } from 'react-bootstrap'
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -12,22 +12,27 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo)
+    console.error('ErrorBoundary caught an error:', error, errorInfo)
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <Container className="mt-5">
+        <Container className="py-5">
           <Alert variant="danger">
-            <Alert.Heading>Ops! Algo deu errado</Alert.Heading>
-            <p>Ocorreu um erro inesperado. Tente recarregar a página.</p>
-            <Button 
-              variant="outline-danger" 
-              onClick={() => window.location.reload()}
-            >
-              Recarregar Página
-            </Button>
+            <Alert.Heading>Oops! Algo deu errado</Alert.Heading>
+            <p>
+              Ocorreu um erro inesperado. Por favor, recarregue a página ou tente novamente mais tarde.
+            </p>
+            <hr />
+            <div className="d-flex justify-content-end">
+              <Button 
+                variant="outline-danger" 
+                onClick={() => window.location.reload()}
+              >
+                Recarregar Página
+              </Button>
+            </div>
           </Alert>
         </Container>
       )

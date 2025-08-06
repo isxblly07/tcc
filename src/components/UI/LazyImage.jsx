@@ -1,40 +1,44 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState } from 'react'
+import { Spinner } from 'react-bootstrap'
 
-const LazyImage = ({ src, alt, className, placeholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNhcnJlZ2FuZG8uLi48L3RleHQ+PC9zdmc+' }) => {
-  const [imageSrc, setImageSrc] = useState(placeholder)
-  const [imageRef, setImageRef] = useState()
+const LazyImage = ({ src, alt, className, ...props }) => {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
-  useEffect(() => {
-    let observer
-    if (imageRef && imageSrc === placeholder) {
-      observer = new IntersectionObserver(
-        entries => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              setImageSrc(src)
-              observer.unobserve(imageRef)
-            }
-          })
-        },
-        { threshold: 0.1 }
-      )
-      observer.observe(imageRef)
-    }
-    return () => {
-      if (observer && observer.unobserve) {
-        observer.unobserve(imageRef)
-      }
-    }
-  }, [imageRef, imageSrc, placeholder, src])
+  const handleLoad = () => {
+    setLoading(false)
+  }
+
+  const handleError = () => {
+    setLoading(false)
+    setError(true)
+  }
+
+  if (error) {
+    return (
+      <div className={`d-flex align-items-center justify-content-center bg-light ${className}`} {...props}>
+        <span className="text-muted">Imagem não disponível</span>
+      </div>
+    )
+  }
 
   return (
-    <img
-      ref={setImageRef}
-      src={imageSrc}
-      alt={alt}
-      className={className}
-      loading="lazy"
-    />
+    <div className="position-relative">
+      {loading && (
+        <div className={`d-flex align-items-center justify-content-center bg-light ${className}`} {...props}>
+          <Spinner animation="border" size="sm" />
+        </div>
+      )}
+      <img
+        src={src}
+        alt={alt}
+        className={className}
+        onLoad={handleLoad}
+        onError={handleError}
+        style={{ display: loading ? 'none' : 'block' }}
+        {...props}
+      />
+    </div>
   )
 }
 

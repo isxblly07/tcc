@@ -1,33 +1,33 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Row, Col, Card, Badge, Button } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import { FaCreditCard, FaCalendarAlt, FaTimes } from 'react-icons/fa'
+import { Container, Row, Col, Card, Badge, Button, Alert } from 'react-bootstrap'
 import { toast } from 'react-toastify'
-import { appointmentService } from '../services/appointmentService'
-import { serviceService } from '../services/serviceService'
 import { useAuth } from '../context/AuthContext'
-import { formatDate, formatTime, formatCurrency, getStatusColor, getStatusText } from '../utils/helpers'
+import api from '../services/api'
 import LoadingSpinner from '../components/UI/LoadingSpinner'
 
 const Appointments = () => {
   const { user } = useAuth()
   const [appointments, setAppointments] = useState([])
   const [services, setServices] = useState([])
+  const [professionals, setProfessionals] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    loadData()
+    fetchData()
   }, [])
 
-  const loadData = async () => {
+  const fetchData = async () => {
     try {
-      const [appointmentsData, servicesData] = await Promise.all([
-        appointmentService.getUserAppointments(user.id),
-        serviceService.getServices()
+      const [appointmentsRes, servicesRes, professionalsRes] = await Promise.all([
+        api.get('/appointments'),
+        api.get('/services'),
+        api.get('/professionals')
       ])
       
-      setAppointments(appointmentsData)
-      setServices(servicesData)
+      const userAppointments = appointmentsRes.data.filter(apt => apt.userId === user.id)
+      setAppointments(userAppointments)
+      setServices(servicesRes.data)
+      setProfessionals(professionalsRes.data)
     } catch (error) {
       toast.error('Erro ao carregar agendamentos')
     } finally {
@@ -35,111 +35,98 @@ const Appointments = () => {
     }
   }
 
-  const getServiceById = (serviceId) => {
-    return services.find(service => service.id === serviceId)
+  const getServiceName = (serviceId) => {
+    const service = services.find(s => s.id === serviceId)
+    return service ? service.name : 'Serviço não encontrado'
   }
 
-  const handleCancelAppointment = async (appointmentId) => {
-    if (window.confirm('Tem certeza que deseja cancelar este agendamento?')) {
-      try {
-        await appointmentService.updateAppointment(appointmentId, { status: 'cancelled' })
-        toast.success('Agendamento cancelado com sucesso!')
-        loadData()
-      } catch (error) {
-        toast.error('Erro ao cancelar agendamento')
-      }
+  const getProfessionalName = (professionalId) => {
+    const professional = professionals.find(p => p.id === professionalId)
+    return professional ? professional.name : 'Profissional não encontrado'
+  }
+
+  const getStatusBadge = (status) => {
+    const statusMap = {
+      confirmed: { variant: 'success', text: 'Confirmado' },
+      pending: { variant: 'warning', text: 'Pendente' },
+      cancelled: { variant: 'danger', text: 'Cancelado' },
+      completed: { variant: 'info', text: 'Concluído' }
+    }
+    
+    const statusInfo = statusMap[status] || { variant: 'secondary', text: status }
+    return <Badge bg={statusInfo.variant}>{statusInfo.text}</Badge>
+  }
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('pt-BR')
+  }
+
+  const cancelAppointment = async (appointmentId) => {
+    if (!window.confirm('Tem certeza que deseja cancelar este agendamento?')) {
+      return
+    }
+
+    try {
+      await api.patch(`/appointments/${appointmentId}`, { status: 'cancelled' })
+      toast.success('Agendamento cancelado com sucesso')
+      fetchData()
+    } catch (error) {
+      toast.error('Erro ao cancelar agendamento')
     }
   }
 
-  if (loading) {
-    return <LoadingSpinner />
-  }
+  if (loading) return <LoadingSpinner />
 
   return (
-    <Container className="py-4">
-      <Row className="mb-4">
-        <Col>
-          <h1>Meus Agendamentos</h1>
-          <p className="text-muted">Gerencie seus agendamentos</p>
-        </Col>
-      </Row>
-
+    <Container className="py-5">
       <Row>
-        {appointments.length > 0 ? (
-          appointments.map(appointment => {
-            const service = getServiceById(appointment.serviceId)
-            return (
-              <Col md={6} lg={4} key={appointment.id} className="mb-4">
-                <Card className="appointment-card">
-                  <Card.Body>
-                    <div className="d-flex justify-content-between align-items-start mb-2">
-                      <h5>{service?.name}</h5>
-                      <Badge bg={getStatusColor(appointment.status)}>
-                        {getStatusText(appointment.status)}
-                      </Badge>
-                    </div>
-                    
-                    <p className="text-muted mb-2">{service?.category}</p>
-                    
-                    <div className="mb-3">
-                      <strong>Data:</strong> {formatDate(appointment.date)}<br />
-                      <strong>Horário:</strong> {formatTime(appointment.time)}<br />
-                      <strong>Valor:</strong> {formatCurrency(service?.price || 0)}
-                    </div>
-
-                    <div className="d-flex gap-2">
-                      {appointment.status === 'pending' && !appointment.paymentStatus && (
-                        <Button
-                          as={Link}
-                          to={`/app/payment/${appointment.id}`}
-                          variant="success"
-                          size="sm"
-                          className="flex-fill"
-                        >
-                          <FaCreditCard className="me-1" />
-                          Pagar
-                        </Button>
-                      )}
-                      
-                      {(appointment.status === 'confirmed' || appointment.status === 'pending') && (
-                        <Button
-                          as={Link}
-                          to={`/app/reschedule/${appointment.id}`}
-                          variant="outline-primary"
-                          size="sm"
-                          className="flex-fill"
-                        >
-                          <FaCalendarAlt className="me-1" />
-                          Reagendar
-                        </Button>
-                      )}
-                      
-                      {appointment.status !== 'cancelled' && appointment.status !== 'completed' && (
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
-                          onClick={() => handleCancelAppointment(appointment.id)}
-                        >
-                          <FaTimes />
-                        </Button>
-                      )}
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            )
-          })
-        ) : (
-          <Col>
-            <div className="text-center py-5">
-              <h4>Nenhum agendamento encontrado</h4>
-              <p className="text-muted">Você ainda não possui agendamentos</p>
-              <Button href="/services" variant="primary">
-                Agendar Serviço
+        <Col>
+          <h1 className="mb-4">Meus Agendamentos</h1>
+          
+          {appointments.length === 0 ? (
+            <Alert variant="info">
+              Você ainda não possui agendamentos. 
+              <Button variant="link" href="/services" className="p-0 ms-1">
+                Agende um serviço agora!
               </Button>
-            </div>
-          </Col>
-        )}
+            </Alert>
+          ) : (
+            <Row>
+              {appointments.map(appointment => (
+                <Col md={6} lg={4} key={appointment.id} className="mb-4">
+                  <Card className="h-100">
+                    <Card.Body>
+                      <div className="d-flex justify-content-between align-items-start mb-3">
+                        <Card.Title className="mb-0">
+                          {getServiceName(appointment.serviceId)}
+                        </Card.Title>
+                        {getStatusBadge(appointment.status)}
+                      </div>
+                      
+                      <Card.Text>
+                        <strong>Profissional:</strong> {getProfessionalName(appointment.professionalId)}<br/>
+                        <strong>Data:</strong> {formatDate(appointment.date)}<br/>
+                        <strong>Horário:</strong> {appointment.time}
+                      </Card.Text>
+                      
+                      {appointment.status === 'confirmed' && (
+                        <div className="mt-auto">
+                          <Button
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={() => cancelAppointment(appointment.id)}
+                          >
+                            Cancelar
+                          </Button>
+                        </div>
+                      )}
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          )}
+        </Col>
       </Row>
     </Container>
   )

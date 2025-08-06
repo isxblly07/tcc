@@ -9,42 +9,19 @@ import ProtectedRoute from './components/UI/ProtectedRoute'
 import LoadingSpinner from './components/UI/LoadingSpinner'
 import ErrorBoundary from './components/UI/ErrorBoundary'
 
-// Lazy load components
-const Home = React.lazy(() => import('./pages/institutional/Home'))
-const About = React.lazy(() => import('./pages/institutional/About'))
+// Pages
+const Home = React.lazy(() => import('./pages/Home'))
 const Services = React.lazy(() => import('./pages/Services'))
-const Contact = React.lazy(() => import('./pages/institutional/Contact'))
-const Design = React.lazy(() => import('./pages/institutional/Design'))
-const Hair = React.lazy(() => import('./pages/categories/Hair'))
-const Nails = React.lazy(() => import('./pages/categories/Nails'))
-const Makeup = React.lazy(() => import('./pages/categories/Makeup'))
-const Skincare = React.lazy(() => import('./pages/categories/Skincare'))
 const Login = React.lazy(() => import('./pages/Login'))
 const Register = React.lazy(() => import('./pages/Register'))
 const Booking = React.lazy(() => import('./pages/Booking'))
 const Appointments = React.lazy(() => import('./pages/Appointments'))
 const History = React.lazy(() => import('./pages/History'))
-const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'))
-const Review = React.lazy(() => import('./pages/Review'))
-const Agenda = React.lazy(() => import('./pages/Agenda'))
 const Profile = React.lazy(() => import('./pages/Profile'))
 const Settings = React.lazy(() => import('./pages/Settings'))
+const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'))
 const Reports = React.lazy(() => import('./pages/Reports'))
-const Payment = React.lazy(() => import('./pages/Payment'))
-const Reschedule = React.lazy(() => import('./pages/Reschedule'))
-const TwoFactorAuth = React.lazy(() => import('./pages/TwoFactorAuth'))
-const ServiceManagement = React.lazy(() => import('./pages/admin/ServiceManagement'))
-const LGPD = React.lazy(() => import('./pages/LGPD'))
 const ChatSupport = React.lazy(() => import('./components/UI/ChatSupport'))
-
-// Admin Pages
-const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'))
-const AdminDashboardNew = React.lazy(() => import('./pages/admin/AdminDashboard'))
-const AdminAppointments = React.lazy(() => import('./pages/admin/AdminAppointments'))
-const AdminServices = React.lazy(() => import('./pages/admin/AdminServices'))
-const AdminReports = React.lazy(() => import('./pages/admin/AdminReports'))
-const ManageProfessionals = React.lazy(() => import('./pages/admin/ManageProfessionals'))
-const ManageSchedules = React.lazy(() => import('./pages/admin/ManageSchedules'))
 
 const Layout = ({ children }) => (
   <div className="d-flex flex-column min-vh-100">
@@ -64,19 +41,11 @@ function App() {
         <AuthProvider>
           <Router>
             <Routes>
-              {/* Main Routes */}
+              {/* Public Routes */}
               <Route path="/" element={
                 <Layout>
                   <Suspense fallback={<LoadingSpinner />}>
                     <Home />
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/sobre" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <About />
                   </Suspense>
                 </Layout>
               } />
@@ -89,53 +58,16 @@ function App() {
                 </Layout>
               } />
               
-              <Route path="/contato" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Contact />
-                  </Suspense>
-                </Layout>
+              <Route path="/login" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Login />
+                </Suspense>
               } />
               
-              <Route path="/design" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Design />
-                  </Suspense>
-                </Layout>
-              } />
-              
-              {/* Category Routes */}
-              <Route path="/cabelo" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Hair />
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/manicure" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Nails />
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/maquiagem" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Makeup />
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/cuidados" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Skincare />
-                  </Suspense>
-                </Layout>
+              <Route path="/register" element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Register />
+                </Suspense>
               } />
               
               {/* Protected Routes */}
@@ -169,16 +101,6 @@ function App() {
                 </Layout>
               } />
               
-              <Route path="/agenda" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute>
-                      <Agenda />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
               <Route path="/profile" element={
                 <Layout>
                   <Suspense fallback={<LoadingSpinner />}>
@@ -194,16 +116,6 @@ function App() {
                   <Suspense fallback={<LoadingSpinner />}>
                     <ProtectedRoute>
                       <Settings />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/lgpd" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute>
-                      <LGPD />
                     </ProtectedRoute>
                   </Suspense>
                 </Layout>
@@ -225,96 +137,6 @@ function App() {
                   <Suspense fallback={<LoadingSpinner />}>
                     <ProtectedRoute adminOnly>
                       <Reports />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/admin/services" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute adminOnly>
-                      <ServiceManagement />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              {/* Auth Routes */}
-              <Route path="/login" element={
-                <Suspense fallback={<LoadingSpinner />}>
-                  <Login />
-                </Suspense>
-              } />
-              
-              <Route path="/register" element={
-                <Suspense fallback={<LoadingSpinner />}>
-                  <Register />
-                </Suspense>
-              } />
-              
-              {/* Admin Auth Routes */}
-              <Route path="/admin/login" element={
-                <Suspense fallback={<LoadingSpinner />}>
-                  <AdminLogin />
-                </Suspense>
-              } />
-              
-              <Route path="/admin/dashboard" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute adminOnly>
-                      <AdminDashboardNew />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/admin/appointments" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute adminOnly>
-                      <AdminAppointments />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/admin/services" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute adminOnly>
-                      <AdminServices />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/admin/reports" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute adminOnly>
-                      <AdminReports />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/admin/professionals" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute adminOnly>
-                      <ManageProfessionals />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/admin/schedules" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute adminOnly>
-                      <ManageSchedules />
                     </ProtectedRoute>
                   </Suspense>
                 </Layout>
