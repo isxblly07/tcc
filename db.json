@@ -1,0 +1,128 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "João Silva",
+      "email": "joao@email.com",
+      "phone": "(11) 99999-9999",
+      "password": "123456",
+      "role": "client",
+      "createdAt": "2024-01-01T10:00:00Z",
+      "active": true
+    },
+    {
+      "id": 2,
+      "name": "Admin TimeRight",
+      "email": "admin@timeright.com",
+      "phone": "(11) 88888-8888",
+      "password": "admin123",
+      "role": "admin",
+      "createdAt": "2024-01-01T08:00:00Z",
+      "active": true
+    },
+    {
+      "id": 3,
+      "name": "Maria Santos",
+      "email": "maria@email.com",
+      "phone": "(11) 77777-7777",
+      "password": "123456",
+      "role": "client",
+      "createdAt": "2024-01-05T14:30:00Z",
+      "active": true
+    }
+  ],
+  "services": [
+    {
+      "id": 1,
+      "name": "Corte Feminino",
+      "category": "Cabelo",
+      "price": 60.00,
+      "duration": 40,
+      "description": "Transforme seu visual com um corte moderno feito por profissionais experientes.",
+      "image": "https://source.unsplash.com/400x300/?haircut,woman"
+    },
+    {
+      "id": 2,
+      "name": "Escova Modeladora",
+      "category": "Cabelo",
+      "price": 50.00,
+      "duration": 50,
+      "description": "Modelagem perfeita com brilho e leveza para qualquer ocasião.",
+      "image": "https://source.unsplash.com/400x300/?hair,blowdry"
+    },
+    {
+      "id": 3,
+      "name": "Coloração Completa",
+      "category": "Cabelo",
+      "price": 150.00,
+      "duration": 120,
+      "description": "Coloração de raiz às pontas com tons vibrantes e duradouros.",
+      "image": "https://source.unsplash.com/400x300/?hair,color"
+    },
+    {
+      "id": 4,
+      "name": "Hidratação Capilar Profunda",
+      "category": "Cabelo",
+      "price": 70.00,
+      "duration": 60,
+      "description": "Tratamento nutritivo para recuperar fios danificados e sem vida.",
+      "image": "https://source.unsplash.com/400x300/?hair,treatment"
+    },
+    {
+      "id": 5,
+      "name": "Manicure e Pedicure",
+      "category": "Unhas",
+      "price": 45.00,
+      "duration": 80,
+      "description": "Cuidado completo com mãos e pés com esmaltação impecável.",
+      "image": "https://source.unsplash.com/400x300/?manicure,nails"
+    },
+    {
+      "id": 6,
+      "name": "Design de Sobrancelhas",
+      "category": "Estética",
+      "price": 25.00,
+      "duration": 25,
+      "description": "Sobrancelhas definidas com técnica e harmonia para seu rosto.",
+      "image": "https://source.unsplash.com/400x300/?eyebrows,beauty"
+    }
+  ],
+  "professionals": [
+    {
+      "id": 1,
+      "name": "Ana Silva",
+      "specialty": "Cabeleireiro",
+      "services": [1, 2, 3, 4]
+    },
+    {
+      "id": 2,
+      "name": "Maria Costa",
+      "specialty": "Manicure",
+      "services": [5]
+    },
+    {
+      "id": 3,
+      "name": "Julia Santos",
+      "specialty": "Estética",
+      "services": [6]
+    }
+  ],
+  "appointments": [
+    {
+      "id": 1,
+      "userId": 1,
+      "serviceId": 1,
+      "professionalId": 1,
+      "date": "2024-01-20",
+      "time": "14:00",
+      "status": "confirmed",
+      "createdAt": "2024-01-15T10:00:00Z"
+    }
+  ],
+  "reviews": [],
+  "payments": [],
+  "notifications": [],
+  "reminders": [],
+  "chat-messages": [],
+  "refunds": []
+}
