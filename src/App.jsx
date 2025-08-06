@@ -1,153 +1,55 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-
-import { AuthProvider } from './context/AuthContext'
-import { ThemeProvider } from './context/ThemeContext'
-import Header from './components/Layout/Header'
-import Footer from './components/Layout/Footer'
-import ProtectedRoute from './components/UI/ProtectedRoute'
-import LoadingSpinner from './components/UI/LoadingSpinner'
-import ErrorBoundary from './components/UI/ErrorBoundary'
+import { AuthProvider } from './hooks/useAuth'
+import { ThemeProvider } from './hooks/useTheme'
 
 // Pages
-const Home = React.lazy(() => import('./pages/Home'))
-const Services = React.lazy(() => import('./pages/Services'))
-const Login = React.lazy(() => import('./pages/Login'))
-const Register = React.lazy(() => import('./pages/Register'))
-const Booking = React.lazy(() => import('./pages/Booking'))
-const Appointments = React.lazy(() => import('./pages/Appointments'))
-const History = React.lazy(() => import('./pages/History'))
-const Profile = React.lazy(() => import('./pages/Profile'))
-const Settings = React.lazy(() => import('./pages/Settings'))
-const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'))
-const Reports = React.lazy(() => import('./pages/Reports'))
-const ChatSupport = React.lazy(() => import('./components/UI/ChatSupport'))
+import Home from './pages/Home'
+import Servicos from './pages/Servicos'
+import Agendamento from './pages/Agendamento'
+import Login from './pages/Login'
+import Cadastro from './pages/Cadastro'
 
-const Layout = ({ children }) => (
-  <div className="d-flex flex-column min-vh-100">
-    <Header />
-    <main className="flex-grow-1">{children}</main>
-    <Footer />
-    <Suspense fallback={null}>
-      <ChatSupport />
-    </Suspense>
-  </div>
-)
+// Admin Pages
+import LoginAdmin from './pages/Admin/LoginAdmin'
+import Dashboard from './pages/Admin/Dashboard'
+import GerenciarServicos from './pages/Admin/GerenciarServicos'
+import Agendamentos from './pages/Admin/Agendamentos'
+import Relatorios from './pages/Admin/Relatorios'
+
+// Components
+import Header from './components/Header'
+import Footer from './components/Footer'
+import Chatbot from './components/Chatbot'
 
 function App() {
   return (
-    <ErrorBoundary>
-      <ThemeProvider>
-        <AuthProvider>
-          <Router>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Home />
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/services" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Services />
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/login" element={
-                <Suspense fallback={<LoadingSpinner />}>
-                  <Login />
-                </Suspense>
-              } />
-              
-              <Route path="/register" element={
-                <Suspense fallback={<LoadingSpinner />}>
-                  <Register />
-                </Suspense>
-              } />
-              
-              {/* Protected Routes */}
-              <Route path="/booking/:serviceId" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute>
-                      <Booking />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/appointments" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute>
-                      <Appointments />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/history" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute>
-                      <History />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/profile" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/settings" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute>
-                      <Settings />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              {/* Admin Routes */}
-              <Route path="/admin" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute adminOnly>
-                      <AdminDashboard />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-              
-              <Route path="/reports" element={
-                <Layout>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute adminOnly>
-                      <Reports />
-                    </ProtectedRoute>
-                  </Suspense>
-                </Layout>
-              } />
-            </Routes>
-            
-
-          </Router>
-        </AuthProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+            <Header />
+            <main className="container mx-auto px-4 py-8">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/servicos" element={<Servicos />} />
+                <Route path="/agendamento" element={<Agendamento />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/cadastro" element={<Cadastro />} />
+                
+                <Route path="/admin/login" element={<LoginAdmin />} />
+                <Route path="/admin/dashboard" element={<Dashboard />} />
+                <Route path="/admin/servicos" element={<GerenciarServicos />} />
+                <Route path="/admin/agendamentos" element={<Agendamentos />} />
+                <Route path="/admin/relatorios" element={<Relatorios />} />
+              </Routes>
+            </main>
+            <Footer />
+            <Chatbot />
+          </div>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 

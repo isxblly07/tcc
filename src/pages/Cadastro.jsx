@@ -2,23 +2,35 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
-const Login = () => {
-  const [formData, setFormData] = useState({ email: '', senha: '' })
+const Cadastro = () => {
+  const [formData, setFormData] = useState({
+    nome: '',
+    email: '',
+    telefone: '',
+    senha: '',
+    confirmarSenha: ''
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const { login } = useAuth()
+  const { register } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
     setError('')
 
+    if (formData.senha !== formData.confirmarSenha) {
+      setError('As senhas não coincidem')
+      return
+    }
+
+    setLoading(true)
+
     try {
-      await login(formData.email, formData.senha)
-      navigate('/')
+      await register(formData)
+      navigate('/login')
     } catch (err) {
-      setError('Email ou senha inválidos')
+      setError('Erro ao criar conta. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -27,7 +39,7 @@ const Login = () => {
   return (
     <div className="max-w-md mx-auto">
       <div className="card">
-        <h1 className="text-2xl font-bold text-center mb-6">Entrar</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">Criar Conta</h1>
         
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -37,6 +49,17 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
+            <label className="block text-sm font-medium mb-1">Nome</label>
+            <input
+              type="text"
+              required
+              className="input"
+              value={formData.nome}
+              onChange={(e) => setFormData({...formData, nome: e.target.value})}
+            />
+          </div>
+
+          <div>
             <label className="block text-sm font-medium mb-1">Email</label>
             <input
               type="email"
@@ -44,6 +67,17 @@ const Login = () => {
               className="input"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Telefone</label>
+            <input
+              type="tel"
+              required
+              className="input"
+              value={formData.telefone}
+              onChange={(e) => setFormData({...formData, telefone: e.target.value})}
             />
           </div>
 
@@ -58,20 +92,31 @@ const Login = () => {
             />
           </div>
 
+          <div>
+            <label className="block text-sm font-medium mb-1">Confirmar Senha</label>
+            <input
+              type="password"
+              required
+              className="input"
+              value={formData.confirmarSenha}
+              onChange={(e) => setFormData({...formData, confirmarSenha: e.target.value})}
+            />
+          </div>
+
           <button
             type="submit"
             disabled={loading}
             className="w-full btn-primary disabled:opacity-50"
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? 'Criando conta...' : 'Criar Conta'}
           </button>
         </form>
 
         <div className="text-center mt-6">
           <p className="text-gray-600 dark:text-gray-300">
-            Não tem conta?{' '}
-            <Link to="/cadastro" className="text-primary hover:underline">
-              Cadastre-se
+            Já tem conta?{' '}
+            <Link to="/login" className="text-primary hover:underline">
+              Entrar
             </Link>
           </p>
         </div>
@@ -80,4 +125,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Cadastro
